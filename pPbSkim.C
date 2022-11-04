@@ -18,7 +18,7 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
 	float jetetamin = 2.1;
 
 	TString outputFileName;
-	outputFileName = Form("%s",ouputfile.Data());
+	outputFileName = Form("/eos/user/d/ddesouza/pPbskims/%s",ouputfile.Data());
 
 
 	clock_t sec_start, sec_end;
