@@ -1,6 +1,7 @@
-#include "call_libraries.h"	 // call libraries from ROOT and C++
-#include "uiclogo.h"			 // call UIC logo and initialization
-#include "CATree.h" 			 // call re-cluster for WTA axis: see https://github.com/FHead/PhysicsMiniProjects/tree/master/JetSmallSystem/24622_Recluster
+#include "call_libraries.h" // call libraries from ROOT and C++
+#include "uiclogo.h"	    // call UIC logo and initialization
+#include "CATree.h" 	    // call re-cluster for WTA axis: see https://github.com/FHead/PhysicsMiniProjects/tree/master/JetSmallSystem/24622_Recluster
+#include "ntrkoff.h"        // get Ntrk offline
 
 /*
 Main skim pPb data and MC
@@ -10,16 +11,19 @@ Written by Dener Lemos (dener.lemos@cern.ch)
 --> Arguments
 input_file: text file with a list of root input files: Forest or Skims
 ouputfile: just a counting number to run on Condor
-is_MC: false for data and true for MC
+isMC: 0 for false --> data and > 0 for true --> MC
+mult: 0 for no cut/selection or MC, 1 for MB [10,185], 2 for HM PD 1 to 6 [185,250] and 3 for HM PD 7 [250, inf]
 */
-void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
+void pPbSkim(TString input_file, TString ouputfile, int isMC, int mult){
+
+	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
 	float jetptmin = 30.0;
 	float jetetamin = 2.1;
 
 	TString outputFileName;
-	outputFileName = Form("/eos/user/d/ddesouza/pPbskims/%s",ouputfile.Data());
-
+	//outputFileName = Form("/eos/user/d/ddesouza/pPbskims/%s",ouputfile.Data());
+        outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
 
 	clock_t sec_start, sec_end;
 	sec_start = clock(); // start timing measurement
@@ -38,12 +42,11 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
 	// Make a chain and a vector of file names
 	std::vector<TString> file_name_vector;
 	string file_chain;
-	while(getline(inputfile, file_chain)){file_name_vector.push_back(file_chain.c_str());}
+	int xx = 0;
+	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("root://osg-se.sprace.org.br/%s",file_chain.c_str()));}
 	inputfile.close();
-
 	// Maximum size of arrays
-	const Int_t nMaxEventPlane = 30;	// Maximum number of event planes in an event
-	const Int_t nMaxJet = 250;				// Maximum number of jets in an event
+	const Int_t nMaxJet = 300;				// Maximum number of jets in an event
 	const Int_t nMaxTrack = 60000;		// Maximum number of tracks in an event
 	
 	// Define trees to be read from the files
@@ -700,7 +703,7 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
 		if( iEvent % 1000 == 0 )	std::cout << "iEvent: " << iEvent <<	" of " << nEvents << std::endl;
 
 		// ========================================== //
-		//				Read the event to input trees
+		//	Read the event to input trees	      //
 		// ========================================== //
 		
 		heavyIonTree->GetEntry(iEvent);
@@ -714,6 +717,16 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
 		for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 			jetTree[iJetType]->GetEntry(iEvent);
 		}
+
+		int multiplicity = get_Ntrkoff(nTracks, trackEtaArray, trackPtArray, trackChargeArray, trackHighPurityArray, trackPtErrorArray, trackVertexDistanceXYArray, trackVertexDistanceXYErrorArray, trackVertexDistanceZArray, trackVertexDistanceZErrorArray);
+
+		bool multsel = true;
+		if(mult==0){cout << "No multiplicity cut" << endl;}
+		if(mult==1){cout << "MB: [0,185]" << endl; if(multiplicity >= 185){multsel=false;}}
+                if(mult==2){cout << "HM 1 to 6: [185,250]" << endl; if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
+                if(mult==3){cout << "HM 7: [250,inf]" << endl; if(multiplicity < 250){multsel=false;}}
+
+		if(!multsel) continue;		
 
 		heavyIonTreeOutput->Fill();
 		hltTreeOutput->Fill();
@@ -876,10 +889,10 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
     		// Do basic track cuts for the reconstructed tracks
     		if(trackHighPurityArray[iTrack] != 1) passTrackCuts = false;
     		if(fabs(trackPtErrorArray[iTrack]/trackPtArray[iTrack]) > 0.15) passTrackCuts = false;
-    		if(fabs(trackVertexDistanceZArray[iTrack]/trackVertexDistanceZErrorArray[iTrack]) > 3.5) passTrackCuts = false;
-    		if(fabs(trackVertexDistanceXYArray[iTrack]/trackVertexDistanceXYErrorArray[iTrack]) > 3.5) passTrackCuts = false;
+    		if(fabs(trackVertexDistanceZArray[iTrack]/trackVertexDistanceZErrorArray[iTrack]) > 5.0) passTrackCuts = false;
+    		if(fabs(trackVertexDistanceXYArray[iTrack]/trackVertexDistanceXYErrorArray[iTrack]) > 5.0) passTrackCuts = false;
     		if(fabs(trackEtaArray[iTrack]) >= 2.4) passTrackCuts = false;  //acceptance of the tracker
-    		if(trackPtArray[iTrack] < 0.5) passTrackCuts = false;   // Minimum track pT
+    		if(trackPtArray[iTrack] <= 0.4) passTrackCuts = false;   // Minimum track pT
       
     		if(passTrackCuts){
     			trackPtOutput[iTrackOutput] = trackPtArray[iTrack];
@@ -905,8 +918,8 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
     	if(is_MC){
     		for(int iTrack = 0; iTrack < genTrackPtArray->size(); iTrack++){
     			// Cut away low pT tracks and tracks with eta outside of tracker acceptance
-				if(TMath::Abs(genTrackEtaArray->at(iTrack)) >= 2.4) continue; //acceptance of the tracker
-				if(genTrackPtArray->at(iTrack) < 0.5) continue;   // Minimum track pT
+			if(TMath::Abs(genTrackEtaArray->at(iTrack)) >= 2.4) continue; //acceptance of the tracker
+			if(genTrackPtArray->at(iTrack) <= 0.4) continue;   // Minimum track pT
 		        // Fill the output vectors with gen particles surviving the cuts
         		genTrackPtVector->push_back(genTrackPtArray->at(iTrack));
         		genTrackPhiVector->push_back(genTrackPhiArray->at(iTrack));
@@ -960,7 +973,7 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
 	const char *jetDirectories[] = {"ak4CaloJetAnalyzer","ak4PFJetAnalyzer","akCs4PFJetAnalyzer","ak3PFJetAnalyzer"};
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 		gDirectory->mkdir(jetDirectories[iJetType]);
-    	gDirectory->cd(jetDirectories[iJetType]);
+    		gDirectory->cd(jetDirectories[iJetType]);
 		jetTreeOutput[iJetType]->Write();
 		gDirectory->cd("../");
 	} // Loop over jet types
@@ -997,6 +1010,7 @@ void pPbSkim(TString input_file, TString ouputfile, bool is_MC){
 int main(int argc, char** argv){
 				TString firstArgument(argv[1]);
 				TString outfile(argv[2]);
-				bool mc(argv[3]);
-				pPbSkim(firstArgument,outfile,mc);
+				int mc = atoi(argv[3]);
+				int mult = atoi(argv[4]);
+				pPbSkim(firstArgument,outfile,mc,mult);
 }
