@@ -31,7 +31,9 @@ that creates a certificate file valid for 40 hours: ```voms_proxy.txt```
 
 Now you can submit the condor jobs using the python script, [```HTCondor_submit.py```](https://github.com/denerslemos/pPbskims/blob/main/HTCondor_submit.py):
 
-```python HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z```
+```
+python HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z
+```
 
 input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/DATA_SAMPLES) each .root input will be a job
 output_name_file: output file name (use it without the .root extension), it will automatically include a counter for each input
