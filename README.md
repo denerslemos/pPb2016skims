@@ -14,6 +14,7 @@ Inside of the src folder, download the code using
 ```
 git clone git@github.com:denerslemos/pPbskims.git
 cd pPbskims
+mkdir cond
 ```
 Before compile the code you must check the [sub_skim.sh](https://github.com/denerslemos/pPbskims/blob/main/sub_skim.sh) lines 4 (CMSSW/src) and 6 (.../pPbskims) and replace by your own folders. You also must replace [https://github.com/denerslemos/pPbskims/blob/main/pPbSkim.C#L26](line 26 of pPbSkim.C) to your own EOS path.
 
