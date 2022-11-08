@@ -12,9 +12,9 @@ Written by Dener Lemos (dener.lemos@cern.ch)
 input_file: text file with a list of root input files: Forest or Skims
 ouputfile: just a counting number to run on Condor
 isMC: 0 for false --> data and > 0 for true --> MC
-mult: 0 for no cut/selection or MC, 1 for MB [10,185], 2 for HM PD 1 to 6 [185,250] and 3 for HM PD 7 [250, inf]
+ntrkoff: 0 for no cut/selection or MC, 1 for MB [10,185], 2 for HM PD 1 to 6 [185,250] and 3 for HM PD 7 [250, inf]
 */
-void pPbSkim(TString input_file, TString ouputfile, int isMC, int mult){
+void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
@@ -721,12 +721,12 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int mult){
 		int multiplicity = get_Ntrkoff(nTracks, trackEtaArray, trackPtArray, trackChargeArray, trackHighPurityArray, trackPtErrorArray, trackVertexDistanceXYArray, trackVertexDistanceXYErrorArray, trackVertexDistanceZArray, trackVertexDistanceZErrorArray);
 
 		bool multsel = true;
-		if(mult==0){cout << "No multiplicity cut" << endl;}
-		if(mult==1){cout << "MB: [0,185]" << endl; if(multiplicity >= 185){multsel=false;}}
-                if(mult==2){cout << "HM 1 to 6: [185,250]" << endl; if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
-                if(mult==3){cout << "HM 7: [250,inf]" << endl; if(multiplicity < 250){multsel=false;}}
+		if(ntrkoff==0){if(iEvent==0){cout << "No multiplicity cut" << endl;}}
+		if(ntrkoff==1){if(iEvent==0){cout << "MB: [0,185]" << endl;} if(multiplicity >= 185){multsel=false;}}
+                if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
+                if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
 
-		if(!multsel) continue;		
+		if(multsel==false) continue;		
 
 		heavyIonTreeOutput->Fill();
 		hltTreeOutput->Fill();
@@ -896,8 +896,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int mult){
       
     		if(passTrackCuts){
     			trackPtOutput[iTrackOutput] = trackPtArray[iTrack];
-				trackPtErrorOutput[iTrackOutput] = trackPtErrorArray[iTrack];
-				trackPhiOutput[iTrackOutput] = trackPhiArray[iTrack];
+			trackPtErrorOutput[iTrackOutput] = trackPtErrorArray[iTrack];
+			trackPhiOutput[iTrackOutput] = trackPhiArray[iTrack];
         		trackEtaOutput[iTrackOutput] = trackEtaArray[iTrack];
         		trackHighPurityOutput[iTrackOutput] = trackHighPurityArray[iTrack];
         		trackVertexDistanceZOutput[iTrackOutput] = trackVertexDistanceZArray[iTrack];
@@ -1011,6 +1011,6 @@ int main(int argc, char** argv){
 				TString firstArgument(argv[1]);
 				TString outfile(argv[2]);
 				int mc = atoi(argv[3]);
-				int mult = atoi(argv[4]);
-				pPbSkim(firstArgument,outfile,mc,mult);
+				int ntrkoffline = atoi(argv[4]);
+				pPbSkim(firstArgument,outfile,mc,ntrkoffline);
 }
