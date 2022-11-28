@@ -711,8 +711,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		bool multsel = true;
 		if(ntrkoff==0){if(iEvent==0){cout << "No multiplicity cut" << endl;}}
 		if(ntrkoff==1){if(iEvent==0){cout << "MB: [0,185]" << endl;} if(multiplicity >= 185){multsel=false;}}
-        if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
-        if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
+		if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
+		if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
 
 		if(multsel==false) continue;		
 
@@ -802,7 +802,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
      					// Set particle kinematics
      					double deltaphi = jetPhiArray[iJetType][iJet] - trackPhiArray[itrk];
      					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
-   						while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
+     					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - trackEtaArray[itrk];
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR > jetR) continue;
@@ -816,7 +816,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
      					// Set particle kinematics
      					double deltaphi = jetPhiArray[iJetType][iJet] - particleFlowCandidatePhiVector->at(pfi);
      					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
-   						while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
+     					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - particleFlowCandidateEtaVector->at(pfi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR > jetR) continue;
@@ -831,7 +831,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
    				if(NodesWTAScheme.size()>0){
    					BuildCATree(NodesWTAScheme, -1, WTAScheme);
    					//BuildCATree(NodesWTAScheme, -1, EScheme);
-			    	//cout << "Ratio: " << NodesWTAScheme[0]->P.GetEta()/jetEtaArray[iJet Type][iJet] << " " << NodesWTAScheme[0]->P.GetPhi()/jetPhiArray[iJetType][iJet] << endl;
   					jetPhiWTA = NodesWTAScheme[0]->P.GetPhi();
   					jetEtaWTA = NodesWTAScheme[0]->P.GetEta();
   					delete NodesWTAScheme[0];
@@ -884,7 +883,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
      					// Set particle kinematics
      					double deltaphi = jetPhiArray[iJetType][iJet] - genTrackPhiArray->at(gpi);
      					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
-   						while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
+     					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - genTrackEtaArray->at(gpi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR > jetRGen) continue;
@@ -898,7 +897,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
    					if(NodesWTASchemeGen.size()>0){
    						BuildCATree(NodesWTASchemeGen, -1, WTAScheme);
    						//BuildCATree(NodesWTASchemeGen, -1, EScheme);
-			    		//cout << "Ratio: " << NodesWTAScheme[0]->P.GetEta()/jetEtaArray[iJet Type][iJet] << " " << NodesWTAScheme[0]->P.GetPhi()/jetPhiArray[iJetType][iJet] << endl;
   						jetPhiWTAGen = NodesWTASchemeGen[0]->P.GetPhi();
   						jetEtaWTAGen = NodesWTASchemeGen[0]->P.GetEta();
   						delete NodesWTASchemeGen[0];
@@ -918,6 +916,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					genJetEtaArrayOutput[iJetType][iJetOutput] = genJetEtaArray[iJetType][iJet];
 					genJetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTAGen;
 					iJetOutput++;
+					
 					} else {nGenJetsOutput[iJetType]--;}
 				} // Generator level jet loop
 			} // If for filling generator jet loop
@@ -941,8 +940,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
       
     		if(passTrackCuts){
     			trackPtOutput[iTrackOutput] = trackPtArray[iTrack];
-				trackPtErrorOutput[iTrackOutput] = trackPtErrorArray[iTrack];
-				trackPhiOutput[iTrackOutput] = trackPhiArray[iTrack];
+    			trackPtErrorOutput[iTrackOutput] = trackPtErrorArray[iTrack];
+    			trackPhiOutput[iTrackOutput] = trackPhiArray[iTrack];
         		trackEtaOutput[iTrackOutput] = trackEtaArray[iTrack];
         		trackHighPurityOutput[iTrackOutput] = trackHighPurityArray[iTrack];
         		trackVertexDistanceZOutput[iTrackOutput] = trackVertexDistanceZArray[iTrack];
@@ -1018,7 +1017,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	const char *jetDirectories[] = {"ak4CaloJetAnalyzer","ak4PFJetAnalyzer","akCs4PFJetAnalyzer","ak3PFJetAnalyzer"};
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 		gDirectory->mkdir(jetDirectories[iJetType]);
-    	gDirectory->cd(jetDirectories[iJetType]);
+		gDirectory->cd(jetDirectories[iJetType]);
 		jetTreeOutput[iJetType]->Write();
 		gDirectory->cd("../");
 	} // Loop over jet types
@@ -1033,7 +1032,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
     	gDirectory->mkdir("HiGenParticleAna");
     	gDirectory->cd("HiGenParticleAna");
      	genTrackTreeOutput->Write();
- 		gDirectory->cd("../");
+     	gDirectory->cd("../");
 	}
   
 	outputFile->Close();
