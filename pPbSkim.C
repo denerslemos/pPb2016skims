@@ -22,8 +22,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	float jetetamin = 2.1;
 
 	TString outputFileName;
-	//outputFileName = Form("/eos/user/d/ddesouza/pPbskims/%s",ouputfile.Data());
-        outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
+    outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
 
 	clock_t sec_start, sec_end;
 	sec_start = clock(); // start timing measurement
@@ -47,7 +46,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	inputfile.close();
 	// Maximum size of arrays
 	const Int_t nMaxJet = 300;				// Maximum number of jets in an event
-	const Int_t nMaxTrack = 60000;		// Maximum number of tracks in an event
+	const Int_t nMaxTrack = 10000;		// Maximum number of tracks in an event
 	
 	// Define trees to be read from the files
 	const int nJetTrees = 4;
@@ -117,52 +116,22 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	// Branches for HLT tree
 	// HLT
-	TBranch *caloJetFilterBranch40;				 		// Branch for calo jet 40 filter bit
-	TBranch *caloJetFilterBranch40_Presc;		 		// Branch for calo jet 40 filter bit precaled
-	TBranch *caloJetFilterBranch40_SeedWithMB;			// Branch for calo jet 40 filter bit MB seeded
-	TBranch *caloJetFilterBranch40_SeedWithMB_Presc;	// Branch for calo jet 40 filter bit MB seeded precaled
 	TBranch *caloJetFilterBranch60;				 		// Branch for calo jet 60 filter bit
-	TBranch *caloJetFilterBranch60_Presc;				// Branch for calo jet 60 filter bit precaled
 	TBranch *caloJetFilterBranch80;				 		// Branch for calo jet 80 filter bit
-	TBranch *caloJetFilterBranch80_Presc;		 		// Branch for calo jet 80 filter bit precaled
 	TBranch *caloJetFilterBranch100;			 		// Branch for calo jet 100 filter bit
-	TBranch *caloJetFilterBranch100_Presc;		 		// Branch for calo jet 100 filter bit precaled
-	TBranch *pfJetFilterBranch40;				 		// Branch for PF jet 40 filter bit
-	TBranch *pfJetFilterBranch40_Presc;					// Branch for PF jet 40 filter bit precaled
-	TBranch *pfJetFilterBranch40_SeedWithMB;				// Branch for PF jet 40 filter bit MB seeded
-	TBranch *pfJetFilterBranch40_SeedWithMB_Presc;		// Branch for PF jet 40 filter bit MB seeded precaled
 	TBranch *pfJetFilterBranch60;				 		// Branch for PF jet 60 filter bit
-	TBranch *pfJetFilterBranch60_Presc;					// Branch for PF jet 60 filter bit precaled
 	TBranch *pfJetFilterBranch80;				 		// Branch for PF jet 80 filter bit
-	TBranch *pfJetFilterBranch80_Presc;					// Branch for PF jet 80 filter bit precaled
 	TBranch *pfJetFilterBranch100;						// Branch for PF jet 100 filter bit
-	TBranch *pfJetFilterBranch100_Presc;				// Branch for PF jet 100 filter bit precaled
 	TBranch *pfJetFilterBranch120;						// Branch for PF jet 120 filter bit
-	TBranch *pfJetFilterBranch120_Presc;				// Branch for PF jet 120 filter bit precaled
 	
 	// Leaves for the HLT tree
-	Int_t caloJetFilterBit40;					// Filter bit for calorimeter jets 40
-	Int_t caloJetFilterBit40_Presc;				// Filter bit for calorimeter jets 40 prescaled
-	Int_t caloJetFilterBit40_SeedWithMB;		// Filter bit for calorimeter jets 40 MB seeded
-	Int_t caloJetFilterBit40_SeedWithMB_Presc;	// Filter bit for calorimeter jets 40 MB seeded prescaled
 	Int_t caloJetFilterBit60;					// Filter bit for calorimeter jets 60
-	Int_t caloJetFilterBit60_Presc;				// Filter bit for calorimeter jets 60 prescaled
 	Int_t caloJetFilterBit80;					// Filter bit for calorimeter jets 80
-	Int_t caloJetFilterBit80_Presc;				// Filter bit for calorimeter jets 80 prescaled
 	Int_t caloJetFilterBit100;					// Filter bit for calorimeter jets 100
-	Int_t caloJetFilterBit100_Presc;			// Filter bit for calorimeter jets 100 prescaled
-	Int_t pfJetFilterBit40;						// Filter bit for particle flow jets 40
-	Int_t pfJetFilterBit40_Presc;				// Filter bit for particle flow jets 40 prescaled
-	Int_t pfJetFilterBit40_SeedWithMB;			// Filter bit for particle flow jets 40 MB seeded
-	Int_t pfJetFilterBit40_SeedWithMB_Presc;	// Filter bit for particle flow jets 40 MB seeded prescaled
 	Int_t pfJetFilterBit60;						// Filter bit for particle flow flow jets 60
-	Int_t pfJetFilterBit60_Presc;				// Filter bit for particle flow jets 60 prescaled
 	Int_t pfJetFilterBit80;						// Filter bit for particle flow jets 80
-	Int_t pfJetFilterBit80_Presc;				// Filter bit for particle flow jets 80 prescaled
 	Int_t pfJetFilterBit100;					// Filter bit for particle flow jets 100
-	Int_t pfJetFilterBit100_Presc; 				// Filter bit for particle flow jets 100 prescaled
 	Int_t pfJetFilterBit120;					// Filter bit for particle flow jets 100
-	Int_t pfJetFilterBit120_Presc; 				// Filter bit for particle flow jets 100 prescaled
 
 	// Branches for skim tree
 	TBranch *primaryVertexBranch;						// Branch for primary vertex filter bit
@@ -325,50 +294,22 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	
 	// Connect the branches to the HLT tree
 	hltTree->SetBranchStatus("*",0);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet40_Eta5p1_v3",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet40_Eta5p1_v3",&caloJetFilterBit40,&caloJetFilterBranch40);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet40_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet40_Eta5p1_v3_Prescl",&caloJetFilterBit40_Presc,&caloJetFilterBranch40_Presc);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3",&caloJetFilterBit40_SeedWithMB,&caloJetFilterBranch40_SeedWithMB);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3_Prescl",&caloJetFilterBit40_SeedWithMB_Presc,&caloJetFilterBranch40_SeedWithMB_Presc);
+	
 	hltTree->SetBranchStatus("HLT_PAAK4CaloJet60_Eta5p1_v3",1);
 	hltTree->SetBranchAddress("HLT_PAAK4CaloJet60_Eta5p1_v3",&caloJetFilterBit60,&caloJetFilterBranch60);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet60_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet60_Eta5p1_v3_Prescl",&caloJetFilterBit60_Presc,&caloJetFilterBranch60_Presc);
 	hltTree->SetBranchStatus("HLT_PAAK4CaloJet80_Eta5p1_v3",1);
 	hltTree->SetBranchAddress("HLT_PAAK4CaloJet80_Eta5p1_v3",&caloJetFilterBit80,&caloJetFilterBranch80);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet80_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet80_Eta5p1_v3_Prescl",&caloJetFilterBit80_Presc,&caloJetFilterBranch80_Presc);
 	hltTree->SetBranchStatus("HLT_PAAK4CaloJet100_Eta5p1_v3",1);
 	hltTree->SetBranchAddress("HLT_PAAK4CaloJet100_Eta5p1_v3",&caloJetFilterBit100,&caloJetFilterBranch100);
-	hltTree->SetBranchStatus("HLT_PAAK4CaloJet100_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4CaloJet100_Eta5p1_v3_Prescl",&caloJetFilterBit100_Presc,&caloJetFilterBranch100_Presc);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet40_Eta5p1_v3",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet40_Eta5p1_v3",&pfJetFilterBit40,&pfJetFilterBranch40);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet40_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet40_Eta5p1_v3_Prescl",&pfJetFilterBit40_Presc,&pfJetFilterBranch40_Presc);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3",&pfJetFilterBit40_SeedWithMB,&pfJetFilterBranch40_SeedWithMB);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3_Prescl",&pfJetFilterBit40_SeedWithMB_Presc,&pfJetFilterBranch40_SeedWithMB_Presc);
 	hltTree->SetBranchStatus("HLT_PAAK4PFJet60_Eta5p1_v4",1);
+
 	hltTree->SetBranchAddress("HLT_PAAK4PFJet60_Eta5p1_v4",&pfJetFilterBit60,&pfJetFilterBranch60);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet60_Eta5p1_v4_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet60_Eta5p1_v4_Prescl",&pfJetFilterBit60_Presc,&pfJetFilterBranch60_Presc);
 	hltTree->SetBranchStatus("HLT_PAAK4PFJet80_Eta5p1_v3",1);
 	hltTree->SetBranchAddress("HLT_PAAK4PFJet80_Eta5p1_v3",&pfJetFilterBit80,&pfJetFilterBranch80);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet80_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet80_Eta5p1_v3_Prescl",&pfJetFilterBit80_Presc,&pfJetFilterBranch80_Presc);
 	hltTree->SetBranchStatus("HLT_PAAK4PFJet100_Eta5p1_v3",1);
 	hltTree->SetBranchAddress("HLT_PAAK4PFJet100_Eta5p1_v3",&pfJetFilterBit100,&pfJetFilterBranch100);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet100_Eta5p1_v3_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet100_Eta5p1_v3_Prescl",&pfJetFilterBit100_Presc,&pfJetFilterBranch100_Presc);
 	hltTree->SetBranchStatus("HLT_PAAK4PFJet120_Eta5p1_v2",1);
 	hltTree->SetBranchAddress("HLT_PAAK4PFJet120_Eta5p1_v2",&pfJetFilterBit120,&pfJetFilterBranch120);
-	hltTree->SetBranchStatus("HLT_PAAK4PFJet120_Eta5p1_v2_Prescl",1);
-	hltTree->SetBranchAddress("HLT_PAAK4PFJet120_Eta5p1_v2_Prescl",&pfJetFilterBit120_Presc,&pfJetFilterBranch120_Presc);
 
 
 	// Connect the branches to the skim tree
@@ -519,14 +460,76 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("vz",&vertexZ,"vz/F");
 	heavyIonTreeOutput->Branch("hiHF",&hiHF,"hiHF/F");
 	
-	// Only do event plane if requested
+	// Event plane
 	TTree *checkFlatteningTreeOutput = new TTree("tree","");
+	/*
 	checkFlatteningTreeOutput->Branch("epang",&eventPlaneAngle,Form("%s",EPNames.Data()));
 	checkFlatteningTreeOutput->Branch("q",&eventPlaneQ,Form("%s",EPNames.Data()));
 	checkFlatteningTreeOutput->Branch("qx",&eventPlaneQx,Form("%s",EPNames.Data()));
 	checkFlatteningTreeOutput->Branch("qy",&eventPlaneQy,Form("%s",EPNames.Data()));
 	checkFlatteningTreeOutput->Branch("mult",&eventPlaneMultiplicity,Form("%s",EPNames.Data()));
+	*/
+	Float_t epang_HFm2, epang_HFp2,epang_HFm3, epang_HFp3, epang_HFm4, epang_HFp4, epang_HFm5, epang_HFp5, epang_HFm6, epang_HFp6;	
+	Float_t q_HFm2, q_HFp2,q_HFm3, q_HFp3, q_HFm4, q_HFp4, q_HFm5, q_HFp5, q_HFm6, q_HFp6;
+	Float_t qx_HFm2, qx_HFp2,qx_HFm3, qx_HFp3, qx_HFm4, qx_HFp4, qx_HFm5, qx_HFp5, qx_HFm6, qx_HFp6;
+	Float_t qy_HFm2, qy_HFp2,qy_HFm3, qy_HFp3, qy_HFm4, qy_HFp4, qy_HFm5, qy_HFp5, qy_HFm6, qy_HFp6;
+	Float_t mult_HFm2, mult_HFp2,mult_HFm3, mult_HFp3, mult_HFm4, mult_HFp4, mult_HFm5, mult_HFp5, mult_HFm6, mult_HFp6;
 
+	checkFlatteningTreeOutput->Branch("epang_HFm2",&epang_HFm2,"epang_HFm2/F");
+	checkFlatteningTreeOutput->Branch("epang_HFp2",&epang_HFp2,"epang_HFp2/F");
+	checkFlatteningTreeOutput->Branch("epang_HFm3",&epang_HFm3,"epang_HFm3/F");
+	checkFlatteningTreeOutput->Branch("epang_HFp3",&epang_HFp3,"epang_HFp3/F");
+	checkFlatteningTreeOutput->Branch("epang_HFm4",&epang_HFm4,"epang_HFm4/F");
+	checkFlatteningTreeOutput->Branch("epang_HFp4",&epang_HFp4,"epang_HFp4/F");
+	checkFlatteningTreeOutput->Branch("epang_HFm5",&epang_HFm5,"epang_HFm5/F");
+	checkFlatteningTreeOutput->Branch("epang_HFp5",&epang_HFp5,"epang_HFp5/F");
+	checkFlatteningTreeOutput->Branch("epang_HFm6",&epang_HFm6,"epang_HFm6/F");
+	checkFlatteningTreeOutput->Branch("epang_HFp6",&epang_HFp6,"epang_HFp6/F");
+
+	checkFlatteningTreeOutput->Branch("q_HFm2",&q_HFm2,"q_HFm2/F");
+	checkFlatteningTreeOutput->Branch("q_HFp2",&q_HFp2,"q_HFp2/F");
+	checkFlatteningTreeOutput->Branch("q_HFm3",&q_HFm3,"q_HFm3/F");
+	checkFlatteningTreeOutput->Branch("q_HFp3",&q_HFp3,"q_HFp3/F");
+	checkFlatteningTreeOutput->Branch("q_HFm4",&q_HFm4,"q_HFm4/F");
+	checkFlatteningTreeOutput->Branch("q_HFp4",&q_HFp4,"q_HFp4/F");
+	checkFlatteningTreeOutput->Branch("q_HFm5",&q_HFm5,"q_HFm5/F");
+	checkFlatteningTreeOutput->Branch("q_HFp5",&q_HFp5,"q_HFp5/F");
+	checkFlatteningTreeOutput->Branch("q_HFm6",&q_HFm6,"q_HFm6/F");
+	checkFlatteningTreeOutput->Branch("q_HFp6",&q_HFp6,"q_HFp6/F");
+
+	checkFlatteningTreeOutput->Branch("qx_HFm2",&qx_HFm2,"qx_HFm2/F");
+	checkFlatteningTreeOutput->Branch("qx_HFp2",&qx_HFp2,"qx_HFp2/F");
+	checkFlatteningTreeOutput->Branch("qx_HFm3",&qx_HFm3,"qx_HFm3/F");
+	checkFlatteningTreeOutput->Branch("qx_HFp3",&qx_HFp3,"qx_HFp3/F");
+	checkFlatteningTreeOutput->Branch("qx_HFm4",&qx_HFm4,"qx_HFm4/F");
+	checkFlatteningTreeOutput->Branch("qx_HFp4",&qx_HFp4,"qx_HFp4/F");
+	checkFlatteningTreeOutput->Branch("qx_HFm5",&qx_HFm5,"qx_HFm5/F");
+	checkFlatteningTreeOutput->Branch("qx_HFp5",&qx_HFp5,"qx_HFp5/F");
+	checkFlatteningTreeOutput->Branch("qx_HFm6",&qx_HFm6,"qx_HFm6/F");
+	checkFlatteningTreeOutput->Branch("qx_HFp6",&qx_HFp6,"qx_HFp6/F");
+
+	checkFlatteningTreeOutput->Branch("qy_HFm2",&qy_HFm2,"qy_HFm2/F");
+	checkFlatteningTreeOutput->Branch("qy_HFp2",&qy_HFp2,"qy_HFp2/F");
+	checkFlatteningTreeOutput->Branch("qy_HFm3",&qy_HFm3,"qy_HFm3/F");
+	checkFlatteningTreeOutput->Branch("qy_HFp3",&qy_HFp3,"qy_HFp3/F");
+	checkFlatteningTreeOutput->Branch("qy_HFm4",&qy_HFm4,"qy_HFm4/F");
+	checkFlatteningTreeOutput->Branch("qy_HFp4",&qy_HFp4,"qy_HFp4/F");
+	checkFlatteningTreeOutput->Branch("qy_HFm5",&qy_HFm5,"qy_HFm5/F");
+	checkFlatteningTreeOutput->Branch("qy_HFp5",&qy_HFp5,"qy_HFp5/F");
+	checkFlatteningTreeOutput->Branch("qy_HFm6",&qy_HFm6,"qy_HFm6/F");
+	checkFlatteningTreeOutput->Branch("qy_HFp6",&qy_HFp6,"qy_HFp6/F");
+
+	checkFlatteningTreeOutput->Branch("mult_HFm2",&mult_HFm2,"mult_HFm2/F");
+	checkFlatteningTreeOutput->Branch("mult_HFp2",&mult_HFp2,"mult_HFp2/F");
+	checkFlatteningTreeOutput->Branch("mult_HFm3",&mult_HFm3,"mult_HFm3/F");
+	checkFlatteningTreeOutput->Branch("mult_HFp3",&mult_HFp3,"mult_HFp3/F");
+	checkFlatteningTreeOutput->Branch("mult_HFm4",&mult_HFm4,"mult_HFm4/F");
+	checkFlatteningTreeOutput->Branch("mult_HFp4",&mult_HFp4,"mult_HFp4/F");
+	checkFlatteningTreeOutput->Branch("mult_HFm5",&mult_HFm5,"mult_HFm5/F");
+	checkFlatteningTreeOutput->Branch("mult_HFp5",&mult_HFp5,"mult_HFp5/F");
+	checkFlatteningTreeOutput->Branch("mult_HFm6",&mult_HFm6,"mult_HFm6/F");
+	checkFlatteningTreeOutput->Branch("mult_HFp6",&mult_HFp6,"mult_HFp6/F");
+	
 	// ptHat and event weight only for MC
 	if(is_MC){
 		heavyIonTreeOutput->Branch("pthat",&ptHat,"pthat/F");
@@ -536,28 +539,13 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	// Copy the HLT tree to the output
 	TTree *hltTreeOutput = new TTree("HltTree","");	
 	// Connect the branches of the HLT tree
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet40_Eta5p1_v3",&caloJetFilterBit40,"HLT_PAAK4CaloJet40_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet40_Eta5p1_v3_Prescl",&caloJetFilterBit40_Presc,"HLT_PAAK4CaloJet40_Eta5p1_v3_Prescl/I");
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3",&caloJetFilterBit40_SeedWithMB,"HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3_Prescl",&caloJetFilterBit40_SeedWithMB_Presc,"HLT_PAAK4CaloJet40_Eta5p1_SeededWithMB_v3_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4CaloJet60_Eta5p1_v3",&caloJetFilterBit60,"HLT_PAAK4CaloJet60_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet60_Eta5p1_v3_Prescl",&caloJetFilterBit60_Presc,"HLT_PAAK4CaloJet60_Eta5p1_v3_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4CaloJet80_Eta5p1_v3",&caloJetFilterBit80,"HLT_PAAK4CaloJet80_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet80_Eta5p1_v3_Prescl",&caloJetFilterBit80_Presc,"HLT_PAAK4CaloJet80_Eta5p1_v3_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4CaloJet100_Eta5p1_v3",&caloJetFilterBit100,"HLT_PAAK4CaloJet100_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4CaloJet100_Eta5p1_v3_Prescl",&caloJetFilterBit100_Presc,"HLT_PAAK4CaloJet100_Eta5p1_v3_Prescl/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet40_Eta5p1_v3",&pfJetFilterBit40,"HLT_PAAK4PFJet40_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet40_Eta5p1_v3_Prescl",&pfJetFilterBit40_Presc,"HLT_PAAK4PFJet40_Eta5p1_v3_Prescl/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3",&pfJetFilterBit40_SeedWithMB,"HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3_Prescl",&pfJetFilterBit40_SeedWithMB_Presc,"HLT_PAAK4PFJet40_Eta5p1_SeededWithMB_v3_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4PFJet60_Eta5p1_v4",&pfJetFilterBit60,"HLT_PAAK4PFJet60_Eta5p1_v4/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet60_Eta5p1_v4_Prescl",&pfJetFilterBit60_Presc,"HLT_PAAK4PFJet60_Eta5p1_v4_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4PFJet80_Eta5p1_v3",&pfJetFilterBit80,"HLT_PAAK4PFJet80_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet80_Eta5p1_v3_Prescl",&pfJetFilterBit80_Presc,"HLT_PAAK4PFJet80_Eta5p1_v3_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4PFJet100_Eta5p1_v3",&pfJetFilterBit100,"HLT_PAAK4PFJet100_Eta5p1_v3/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet100_Eta5p1_v3_Prescl",&pfJetFilterBit100_Presc,"HLT_PAAK4PFJet100_Eta5p1_v3_Prescl/I");
 	hltTreeOutput->Branch("HLT_PAAK4PFJet120_Eta5p1_v2",&pfJetFilterBit120,"HLT_PAAK4PFJet120_Eta5p1_v2/I");
-	hltTreeOutput->Branch("HLT_PAAK4PFJet120_Eta5p1_v2_Prescl",&pfJetFilterBit120_Presc,"HLT_PAAK4PFJet120_Eta5p1_v2_Prescl/I");
 
 	// Copy the skim tree to the output
 	TTree *skimTreeOutput = new TTree("HltTree","");
@@ -723,14 +711,71 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		bool multsel = true;
 		if(ntrkoff==0){if(iEvent==0){cout << "No multiplicity cut" << endl;}}
 		if(ntrkoff==1){if(iEvent==0){cout << "MB: [0,185]" << endl;} if(multiplicity >= 185){multsel=false;}}
-                if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
-                if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
+        if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
+        if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
 
 		if(multsel==false) continue;		
 
 		heavyIonTreeOutput->Fill();
 		hltTreeOutput->Fill();
 		skimTreeOutput->Fill();
+
+		//Event plane (just what we want EP from 2 to 6)
+		epang_HFm2 = (float) eventPlaneAngle[44];
+		epang_HFp2 = (float) eventPlaneAngle[45];
+		epang_HFm3 = (float) eventPlaneAngle[73];
+		epang_HFp3 = (float) eventPlaneAngle[74];
+		epang_HFm4 = (float) eventPlaneAngle[102];
+		epang_HFp4 = (float) eventPlaneAngle[103];
+		epang_HFm5 = (float) eventPlaneAngle[131];
+		epang_HFp5 = (float) eventPlaneAngle[132];
+		epang_HFm6 = (float) eventPlaneAngle[148];
+		epang_HFp6 = (float) eventPlaneAngle[149];
+
+		q_HFm2 = (float) eventPlaneQ[44];
+		q_HFp2 = (float) eventPlaneQ[45];
+		q_HFm3 = (float) eventPlaneQ[73];
+		q_HFp3 = (float) eventPlaneQ[74];
+		q_HFm4 = (float) eventPlaneQ[102];
+		q_HFp4 = (float) eventPlaneQ[103];
+		q_HFm5 = (float) eventPlaneQ[131];
+		q_HFp5 = (float) eventPlaneQ[132];
+		q_HFm6 = (float) eventPlaneQ[148];
+		q_HFp6 = (float) eventPlaneQ[149];
+
+		qx_HFm2 = (float) eventPlaneQx[44];
+		qx_HFp2 = (float) eventPlaneQx[45];
+		qx_HFm3 = (float) eventPlaneQx[73];
+		qx_HFp3 = (float) eventPlaneQx[74];
+		qx_HFm4 = (float) eventPlaneQx[102];
+		qx_HFp4 = (float) eventPlaneQx[103];
+		qx_HFm5 = (float) eventPlaneQx[131];
+		qx_HFp5 = (float) eventPlaneQx[132];
+		qx_HFm6 = (float) eventPlaneQx[148];
+		qx_HFp6 = (float) eventPlaneQx[149];
+		
+		qy_HFm2 = (float) eventPlaneQy[44];
+		qy_HFp2 = (float) eventPlaneQy[45];
+		qy_HFm3 = (float) eventPlaneQy[73];
+		qy_HFp3 = (float) eventPlaneQy[74];
+		qy_HFm4 = (float) eventPlaneQy[102];
+		qy_HFp4 = (float) eventPlaneQy[103];
+		qy_HFm5 = (float) eventPlaneQy[131];
+		qy_HFp5 = (float) eventPlaneQy[132];
+		qy_HFm6 = (float) eventPlaneQy[148];
+		qy_HFp6 = (float) eventPlaneQy[149];
+
+		mult_HFm2 = (float) eventPlaneMultiplicity[44];
+		mult_HFp2 = (float) eventPlaneMultiplicity[45];
+		mult_HFm3 = (float) eventPlaneMultiplicity[73];
+		mult_HFp3 = (float) eventPlaneMultiplicity[74];
+		mult_HFm4 = (float) eventPlaneMultiplicity[102];
+		mult_HFp4 = (float) eventPlaneMultiplicity[103];
+		mult_HFm5 = (float) eventPlaneMultiplicity[131];
+		mult_HFp5 = (float) eventPlaneMultiplicity[132];
+		mult_HFm6 = (float) eventPlaneMultiplicity[148];
+		mult_HFp6 = (float) eventPlaneMultiplicity[149];
+
 		checkFlatteningTreeOutput->Fill();
 
     	// Fill jet histograms using basic jet cuts
@@ -861,7 +906,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					}
 
 					// Apply very basic jet cuts
-					if(genJetPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minumum pT cut of 30 GeV
+					if(genJetPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minimum pT cut of 30 GeV
 					if(fabs(genJetEtaArray[iJetType][iJet]) > jetetamin && fabs(jetEtaWTAGen) > jetetamin) passJetCuts = false;    // Maximum eta cut of 2.1
 				
 					// Fill the jet arrays with generated jets
@@ -896,8 +941,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
       
     		if(passTrackCuts){
     			trackPtOutput[iTrackOutput] = trackPtArray[iTrack];
-			trackPtErrorOutput[iTrackOutput] = trackPtErrorArray[iTrack];
-			trackPhiOutput[iTrackOutput] = trackPhiArray[iTrack];
+				trackPtErrorOutput[iTrackOutput] = trackPtErrorArray[iTrack];
+				trackPhiOutput[iTrackOutput] = trackPhiArray[iTrack];
         		trackEtaOutput[iTrackOutput] = trackEtaArray[iTrack];
         		trackHighPurityOutput[iTrackOutput] = trackHighPurityArray[iTrack];
         		trackVertexDistanceZOutput[iTrackOutput] = trackVertexDistanceZArray[iTrack];
@@ -973,7 +1018,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	const char *jetDirectories[] = {"ak4CaloJetAnalyzer","ak4PFJetAnalyzer","akCs4PFJetAnalyzer","ak3PFJetAnalyzer"};
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 		gDirectory->mkdir(jetDirectories[iJetType]);
-    		gDirectory->cd(jetDirectories[iJetType]);
+    	gDirectory->cd(jetDirectories[iJetType]);
 		jetTreeOutput[iJetType]->Write();
 		gDirectory->cd("../");
 	} // Loop over jet types
