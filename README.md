@@ -6,6 +6,7 @@ Code to produce jets, tracks and event plane skims from the CMS HiForest
 
 Setup CMSSW (just for root versioning)
 ```
+export SCRAM_ARCH=slc7_amd64_gcc10
 cmsrel CMSSW_12_5_0
 cd CMSSW_12_5_0/src
 cmsenv
