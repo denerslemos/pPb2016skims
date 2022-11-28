@@ -22,7 +22,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	float jetetamin = 2.1;
 
 	TString outputFileName;
-    outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
+	outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
 
 	clock_t sec_start, sec_end;
 	sec_start = clock(); // start timing measurement
@@ -41,12 +41,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	// Make a chain and a vector of file names
 	std::vector<TString> file_name_vector;
 	string file_chain;
-	int xx = 0;
 	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("root://osg-se.sprace.org.br/%s",file_chain.c_str()));}
 	inputfile.close();
 	// Maximum size of arrays
-	const Int_t nMaxJet = 300;				// Maximum number of jets in an event
-	const Int_t nMaxTrack = 10000;		// Maximum number of tracks in an event
+	const Int_t nMaxJet = 200;				// Maximum number of jets in an event
+	const Int_t nMaxTrack = 5000;		// Maximum number of tracks in an event
 	
 	// Define trees to be read from the files
 	const int nJetTrees = 4;
