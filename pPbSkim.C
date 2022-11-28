@@ -916,7 +916,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					genJetEtaArrayOutput[iJetType][iJetOutput] = genJetEtaArray[iJetType][iJet];
 					genJetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTAGen;
 					iJetOutput++;
-					
+
 					} else {nGenJetsOutput[iJetType]--;}
 				} // Generator level jet loop
 			} // If for filling generator jet loop
@@ -1029,10 +1029,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	// Generator particles only present in MC
 	if(is_MC){
-    	gDirectory->mkdir("HiGenParticleAna");
-    	gDirectory->cd("HiGenParticleAna");
-     	genTrackTreeOutput->Write();
-     	gDirectory->cd("../");
+		gDirectory->mkdir("HiGenParticleAna");
+		gDirectory->cd("HiGenParticleAna");
+		genTrackTreeOutput->Write();
+		gDirectory->cd("../");
 	}
   
 	outputFile->Close();
