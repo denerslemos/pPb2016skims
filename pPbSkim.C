@@ -45,7 +45,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	inputfile.close();
 	// Maximum size of arrays
 	const Int_t nMaxJet = 200;				// Maximum number of jets in an event
-	const Int_t nMaxTrack = 5000;		// Maximum number of tracks in an event
+	const Int_t nMaxTrack = 2000;		// Maximum number of tracks in an event
 	
 	// Define trees to be read from the files
 	const int nJetTrees = 4;
