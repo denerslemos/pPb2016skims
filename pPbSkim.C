@@ -166,6 +166,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *jetRefPhiBranch[nJetTrees];			// Branch for reference generator level phi for a reconstructed jet
 	TBranch *jetRefFlavorBranch[nJetTrees];			// Branch for flavor for the parton initiating the jet
 	TBranch *jetRefFlavorForBBranch[nJetTrees];		// Branch for flavor for the parton initiating the jet
+	TBranch *jetRefSubidBranch[nJetTrees];		    // Branch for jet subid
 
 	TBranch *nGenJetsBranch[nJetTrees];				// Branch for the number of generator level jets in an event
 	TBranch *genJetPtBranch[nJetTrees];				// Branch for the generator level jet pT
@@ -173,6 +174,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *genJetEtaBranchWTA[nJetTrees];			// Branch for the generetor level jet eta with WTA axis
 	TBranch *genJetPhiBranch[nJetTrees];			// Branch for the generator level jet phi
 	TBranch *genJetPhiBranchWTA[nJetTrees];			// Branch for the generator level jet phi with WTA axis
+	TBranch *genJetSubidBranch[nJetTrees];                // Branch for the generator level jet subid
+	TBranch *genJetMatchIndexBranch[nJetTrees];           // Branch for the generator level jet matched index
 	
 	// Leaves for jet tree
 	Int_t nJets[nJetTrees];									// number of jets in an event
@@ -188,6 +191,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t jetRefPhiArray[nJetTrees][nMaxJet] = {{0}};		// reference generator level pT for a reconstructed jet
 	Int_t jetRefFlavorArray[nJetTrees][nMaxJet] = {{0}};	// flavor for initiating parton for the reference gen jet
 	Int_t jetRefFlavorForBArray[nJetTrees][nMaxJet] = {{0}};// heavy flavor for initiating parton for the reference gen jet
+	Int_t jetRefSubidArray[nJetTrees][nMaxJet] = {{0}};     // jet subid
 
 	Int_t nGenJets[nJetTrees];								// number of generator level jets in an event
 	Float_t genJetPtArray[nJetTrees][nMaxJet] = {{0}};		// pT of all the generator level jets in an event
@@ -195,6 +199,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t genJetPhiArrayWTA[nJetTrees][nMaxJet] = {{0}};	// phi of all the generator level jets in an event with WTA axis
 	Float_t genJetEtaArray[nJetTrees][nMaxJet] = {{0}};		// eta of all the generator level jets in an event
 	Float_t genJetEtaArrayWTA[nJetTrees][nMaxJet] = {{0}};	// eta of all the generator level jets in an event with WTA axis
+	Int_t genJetSubidArray[nJetTrees][nMaxJet] = {{0}};     // subid of all the generator level jets in an event
+	Int_t genJetMatchIndexArray[nJetTrees][nMaxJet] = {{0}};// matched index of all the generator level jets in an event
 	
 	// Branches for track tree
 	TBranch *nTracksBranch;									// Branch for number of tracks
@@ -369,6 +375,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTree[iJetType]->SetBranchAddress("refparton_flavor",&jetRefFlavorArray[iJetType],&jetRefFlavorBranch[iJetType]);
 			jetTree[iJetType]->SetBranchStatus("refparton_flavorForB",1);
 			jetTree[iJetType]->SetBranchAddress("refparton_flavorForB", &jetRefFlavorForBArray[iJetType], &jetRefFlavorForBBranch[iJetType]);
+			jetTree[iJetType]->SetBranchStatus("subid",1);
+			jetTree[iJetType]->SetBranchAddress("subid", &jetRefSubidArray[iJetType], &jetRefSubidBranch[iJetType]);
 			
 			// Gen jet variables
 			jetTree[iJetType]->SetBranchStatus("ngen",1);
@@ -379,6 +387,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTree[iJetType]->SetBranchAddress("genphi",&genJetPhiArray[iJetType],&genJetPhiBranch[iJetType]);
 			jetTree[iJetType]->SetBranchStatus("geneta",1);
 			jetTree[iJetType]->SetBranchAddress("geneta",&genJetEtaArray[iJetType],&genJetEtaBranch[iJetType]);
+			jetTree[iJetType]->SetBranchStatus("genmatchindex",1);
+			jetTree[iJetType]->SetBranchAddress("genmatchindex",&genJetMatchIndexArray[iJetType],&genJetMatchIndexBranch[iJetType]);
+			jetTree[iJetType]->SetBranchStatus("gensubid",1);
+			jetTree[iJetType]->SetBranchAddress("gensubid",&genJetSubidArray[iJetType],&genJetSubidBranch[iJetType]);
 			
 		}
 		
@@ -575,6 +587,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t jetRefPhiArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level phi for a reconstructed jet
 	Int_t jetRefFlavorArrayOutput[nJetTrees][nMaxJet] = {{0}};			// flavor for initiating parton for the reference gen jet
 	Int_t jetRefFlavorForBArrayOutput[nJetTrees][nMaxJet] = {{0}};		// heavy flavor for initiating parton for the reference gen jet
+	Int_t jetRefSubidArrayOutput[nJetTrees][nMaxJet] = {{0}};           // jet subid
+
 
 	Int_t nGenJetsOutput[nJetTrees];								 	// number of generator level jets in an event
 	Float_t genJetPtArrayOutput[nJetTrees][nMaxJet] = {{0}};			// pT of all the generator level jets in an event
@@ -582,6 +596,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t genJetPhiArrayWTAOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the generator level jets in an event with WTA axis
 	Float_t genJetEtaArrayOutput[nJetTrees][nMaxJet] = {{0}};			// eta of all the generator level jets in an event
 	Float_t genJetEtaArrayWTAOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the generator level jets in an event with WTA axis
+	Int_t genJetSubidArrayOutput[nJetTrees][nMaxJet] = {{0}};     		// subid of all the generator level jets in an event
+	Int_t genJetMatchIndexArrayOutput[nJetTrees][nMaxJet] = {{0}};		// matched index of all the generator level jets in an event
 
 
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
@@ -607,6 +623,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTreeOutput[iJetType]->Branch("refphi",&jetRefPhiArrayOutput[iJetType],"refphi[nref]/F");
 			jetTreeOutput[iJetType]->Branch("refparton_flavor", &jetRefFlavorArrayOutput[iJetType], "refparton_flavor[nref]/I");
 			jetTreeOutput[iJetType]->Branch("refparton_flavorForB", &jetRefFlavorForBArrayOutput[iJetType], "refparton_flavorForB[nref]/I");
+			jetTreeOutput[iJetType]->Branch("subid", &jetRefSubidArrayOutput[iJetType], "subid[nref]/I");
 		 
 			jetTreeOutput[iJetType]->Branch("ngen",&nGenJetsOutput[iJetType],"ngen/I");
 			jetTreeOutput[iJetType]->Branch("genpt",&genJetPtArrayOutput[iJetType],"genpt[ngen]/F");
@@ -618,7 +635,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			// Gen jet eta for e-scheme and WTA axes
 			jetTreeOutput[iJetType]->Branch("geneta",&genJetEtaArrayOutput[iJetType],"geneta[ngen]/F");
 			jetTreeOutput[iJetType]->Branch("WTAgeneta",&genJetEtaArrayWTAOutput[iJetType],"WTAgeneta[ngen]/F");
-			
+
+			// Gen match and subid
+			jetTreeOutput[iJetType]->Branch("genmatchindex",&genJetMatchIndexArrayOutput[iJetType],"genmatchindex[ngen]/F");
+			jetTreeOutput[iJetType]->Branch("gensubid",&genJetSubidArrayOutput[iJetType],"gensubid[ngen]/F");
+		
 		} // Branches only for MC
 
 	} // Jet type loop
@@ -856,6 +877,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 						jetRefPhiArrayOutput[iJetType][iJetOutput] = jetRefPhiArray[iJetType][iJet];
 						jetRefFlavorArrayOutput[iJetType][iJetOutput] = jetRefFlavorArray[iJetType][iJet];
 						jetRefFlavorForBArrayOutput[iJetType][iJetOutput] = jetRefFlavorForBArray[iJetType][iJet];
+						jetRefSubidArrayOutput[iJetType][iJetOutput] = jetRefSubidArray[iJetType][iJet];						
 					}
 					iJetOutput++;
 				} else {nJetsOutput[iJetType]--;}
@@ -914,6 +936,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					genJetPhiArrayWTAOutput[iJetType][iJetOutput] = jetPhiWTAGen;
 					genJetEtaArrayOutput[iJetType][iJetOutput] = genJetEtaArray[iJetType][iJet];
 					genJetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTAGen;
+					genJetSubidArrayOutput[iJetType][iJetOutput] = genJetSubidArray[iJetType][iJet];
+					genJetMatchIndexArrayOutput[iJetType][iJetOutput] = genJetMatchIndexArray[iJetType][iJet];
+
 					iJetOutput++;
 
 					} else {nGenJetsOutput[iJetType]--;}
