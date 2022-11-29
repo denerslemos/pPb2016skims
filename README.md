@@ -37,8 +37,14 @@ Now you can submit the condor jobs using the python script, [```HTCondor_submit.
 python HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z
 ```
 
-input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/DATA_SAMPLES) each .root input will be a job
-output_name_file: output file name (use it without the .root extension), it will automatically include a counter for each input
-X: 0 for data and 1 for MC
-Y: 0 for no multiplicity cut (mostly MC or jet samples), 1 for MB [0,185], 2 for HM185 [185,250] and 3 for HM250 [250,inf]
-Z: name for the submission files, I have used HTcondor_sub_ + some information from the sample, pthat, MB, ... + pgoing or Pbgoing. It will automatically include a counter for each input
+- input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/DATA_SAMPLES) each .root input will be a job
+
+- output_name_file: output file name (use it without the .root extension), it will automatically include a counter for each input
+
+- X: 0 for data and 1 for MC
+
+- Y: 0 for no multiplicity cut (mostly MC or jet samples), 1 for MB [0,185], 2 for HM185 [185,250] and 3 for HM250 [250,inf]
+
+- Z: name for the submission files, I have used HTcondor_sub_ + some information from the sample, pthat, MB, ... + pgoing or Pbgoing.
+
+It will automatically include a counter for each input
