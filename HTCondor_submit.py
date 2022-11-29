@@ -31,7 +31,7 @@ fsubfile = open(subFiles+".sub", "w")
 command_lines = '''universe   = vanilla
 getenv     = True
 executable = sub_skim.sh
-+JobFlavour           = "workday"
++JobFlavour           = "espresso"
 requirements = (OpSysAndVer =?= "CentOS7")
 RequestCpus = 1
 transfer_input_files  = voms_proxy.txt
