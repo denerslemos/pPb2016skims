@@ -112,7 +112,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Double_t eventPlaneQy[numberofEPleaves] = {0};				// y-component of the Q-vector
 	Double_t eventPlaneMultiplicity[numberofEPleaves] = {0};	// Particle multiplicity in an event plane
 
-
 	// Branches for HLT tree
 	// HLT
 	TBranch *caloJetFilterBranch60;				 		// Branch for calo jet 60 filter bit
@@ -942,7 +941,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					iJetOutput++;
 
 					} else {nGenJetsOutput[iJetType]--;}
-				} // Generator level jet loop
+					} // Generator level jet loop
 			} // If for filling generator jet loop
 			jetTreeOutput[iJetType]->Fill();
     	} // Loop over jet collections
