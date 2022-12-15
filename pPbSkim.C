@@ -18,8 +18,13 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
-	float jetptmin = 30.0;
-	float jetetamin = 2.1;
+	float jetptmin = 20.0;
+	float jetetamin = 2.5;
+
+	if(is_MC){
+		jetptmin = 0.0;
+		jetetamin = 10000.;
+	}
 
 	TString outputFileName;
 	outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
@@ -83,7 +88,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *eventBranch;					 	// Branch for event
 	TBranch *lumiBranch;						// Branch for lumi
 	TBranch *hiVzBranch;						// Branch for vertex z-position
-	TBranch *hiHFBranch;						// Branch for centrality
+	TBranch *hiHFPlusBranch;					// Branch for HF+ energy deposity
+	TBranch *hiHFMinusBranch;					// Branch for HF- energy deposity
+	TBranch *hiZDCPlusBranch;					// Branch for ZDC+ energy deposity
+	TBranch *hiZDCMinusBranch;					// Branch for ZDC- energy deposity
 	TBranch *ptHatBranch;						// Branch for pT hat
 	TBranch *eventWeightBranch;		 			// Branch for pthat weight for MC
 
@@ -92,7 +100,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	ULong64_t event;			 // Event number
 	UInt_t lumi;				 // Luminosity block
 	Float_t vertexZ;			 // Vertex z-position
-	Float_t hiHF;				 // hiHF = transverse energy sum of HF tower;
+	Float_t hiHFplus;			 // transverse energy sum of HF+ tower;
+	Float_t hiHFminus;			 // transverse energy sum of HF- tower;
+	Float_t hiZDCplus;			 // energy deposit in ZDC+;
+	Float_t hiZDCminus;			 // energy deposit in ZDC-;
 	Float_t ptHat;				 // pT hat
 	Float_t eventWeight;			 // jet weight in the tree
 
@@ -273,8 +284,14 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTree->SetBranchAddress("lumi",&lumi,&lumiBranch);
 	heavyIonTree->SetBranchStatus("vz",1);
 	heavyIonTree->SetBranchAddress("vz",&vertexZ,&hiVzBranch);
-	heavyIonTree->SetBranchStatus("hiHF",1);
-	heavyIonTree->SetBranchAddress("hiHF",&hiHF,&hiHFBranch);
+	heavyIonTree->SetBranchStatus("hiHFplus",1);
+	heavyIonTree->SetBranchAddress("hiHFplus",&hiHFplus,&hiHFplusBranch);
+	heavyIonTree->SetBranchStatus("hiHFminus",1);
+	heavyIonTree->SetBranchAddress("hiHFminus",&hiHFminus,&hiHFminusBranch);
+	heavyIonTree->SetBranchStatus("hiZDCplus",1);
+	heavyIonTree->SetBranchAddress("hiZDCplus",&hiZDCplus,&hiZDCplusBranch);
+	heavyIonTree->SetBranchStatus("hiZDCminus",1);
+	heavyIonTree->SetBranchAddress("hiZDCminus",&hiZDCminus,&hiZDCminusBranch);
 	
 	// Event plane
 	checkFlatteningTree->SetBranchStatus("epang",1);
@@ -468,7 +485,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("evt",&event,"evt/l");
 	heavyIonTreeOutput->Branch("lumi",&lumi,"lumi/i");
 	heavyIonTreeOutput->Branch("vz",&vertexZ,"vz/F");
-	heavyIonTreeOutput->Branch("hiHF",&hiHF,"hiHF/F");
+	heavyIonTreeOutput->Branch("hiHFplus",&hiHFplus,"hiHFplus/F");
+	heavyIonTreeOutput->Branch("hiHFminus",&hiHFminus,"hiHFminus/F");
+	heavyIonTreeOutput->Branch("hiZDCplus",&hiZDCplus,"hiZDCplus/F");
+	heavyIonTreeOutput->Branch("hiZDCminus",&hiZDCminus,"hiZDCminus/F");
 	
 	// Event plane
 	TTree *checkFlatteningTreeOutput = new TTree("tree","");
