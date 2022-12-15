@@ -88,10 +88,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *eventBranch;					 	// Branch for event
 	TBranch *lumiBranch;						// Branch for lumi
 	TBranch *hiVzBranch;						// Branch for vertex z-position
-	TBranch *hiHFPlusBranch;					// Branch for HF+ energy deposity
-	TBranch *hiHFMinusBranch;					// Branch for HF- energy deposity
-	TBranch *hiZDCPlusBranch;					// Branch for ZDC+ energy deposity
-	TBranch *hiZDCMinusBranch;					// Branch for ZDC- energy deposity
+	TBranch *hiHFplusBranch;					// Branch for HF+ energy deposity
+	TBranch *hiHFminusBranch;					// Branch for HF- energy deposity
+	TBranch *hiZDCplusBranch;					// Branch for ZDC+ energy deposity
+	TBranch *hiZDCminusBranch;					// Branch for ZDC- energy deposity
 	TBranch *ptHatBranch;						// Branch for pT hat
 	TBranch *eventWeightBranch;		 			// Branch for pthat weight for MC
 
