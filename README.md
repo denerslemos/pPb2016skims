@@ -27,7 +27,7 @@ This will create the executable: ```pPbSkim```
 
 After that you will need your VOMS certificate, do it using
 ```
-voms-proxy-init -rfc -voms cms --out voms_proxy.txt --hours 40
+voms-proxy-init -rfc -voms cms --out voms_proxy.txt --hours 200
 ```
 that creates a certificate file valid for 40 hours: ```voms_proxy.txt```
 
