@@ -29,7 +29,7 @@ After that you will need your VOMS certificate, do it using
 ```
 voms-proxy-init -rfc -voms cms --out voms_proxy.txt --hours 200
 ```
-that creates a certificate file valid for 40 hours: ```voms_proxy.txt```
+that creates a certificate file valid for 200 hours: ```voms_proxy.txt```
 
 Now you can submit the condor jobs using the python script, [```HTCondor_submit.py```](https://github.com/denerslemos/pPbskims/blob/main/HTCondor_submit.py):
 
