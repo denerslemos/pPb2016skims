@@ -921,10 +921,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 					for(int gpi = 0; gpi < genTrackPtArray->size(); gpi++) {
      					// Set particle kinematics
-     					double deltaphi = jetPhiArray[iJetType][iJet] - genTrackPhiArray->at(gpi);
+     					double deltaphi = genJetPhiArray[iJetType][iJet] - genTrackPhiArray->at(gpi);
      					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
      					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
-     					double deltaeta = jetEtaArray[iJetType][iJet] - genTrackEtaArray->at(gpi);
+     					double deltaeta = genJetEtaArray[iJetType][iJet] - genTrackEtaArray->at(gpi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR > jetRGen) continue;
       					FourVector P;
