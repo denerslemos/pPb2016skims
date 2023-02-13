@@ -27,7 +27,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	}
 
 	TString outputFileName;
-	outputFileName = Form("/eos/cms/store/group/phys_heavyions_ops/ddesouza/pPbskims/%s",ouputfile.Data());
+	outputFileName = Form("%s",ouputfile.Data());
 
 	clock_t sec_start, sec_end;
 	sec_start = clock(); // start timing measurement
