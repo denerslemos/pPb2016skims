@@ -39,7 +39,7 @@ python HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z
 
 - input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/DATA_SAMPLES) each .root input will be a job
 
-- output_name_file: output file name (use it without the .root extension), it will automatically include a counter for each input. Can use paths to save on EOS.
+- output_name_file: output file name (use it without the .root extension), it will automatically include a counter for each input. You can use paths to save on EOS.
 
 - X: 0 for data and 1 for MC
 
