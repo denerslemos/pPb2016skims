@@ -1,6 +1,6 @@
 # pPb skim code using HTCondor
 
-Code to produce jets, tracks and event plane skims from the CMS HiForest
+Code to produce jets, tracks and event plane skims from the CMS HiForest. Setup here: https://github.com/denerslemos/JetSmallSystems/tree/pPb/HiForest
 
 ## Intructions
 
@@ -13,11 +13,11 @@ cmsenv
 ```
 Inside of the src folder, download the code using
 ```
-git clone git@github.com:denerslemos/pPbskims.git
-cd pPbskims
+git clone git@github.com:denerslemos/pPb2016skims.git
+cd pPb2016skims
 mkdir cond
 ```
-Before compile the code you must check the [sub_skim.sh](https://github.com/denerslemos/pPbskims/blob/main/sub_skim.sh) lines 4 (CMSSW/src) and 6 (.../pPbskims) and replace by your own folders.
+Before compile the code you must check the [sub_skim.sh](https://github.com/denerslemos/pPb2016skims/blob/main/sub_skim.sh) lines 4 (CMSSW/src) and 6 (.../pPb2016skims) and replace by your own folders.
 
 Once this steps are done you can compile the code with
 ```
@@ -31,13 +31,13 @@ voms-proxy-init -rfc -voms cms --out voms_proxy.txt --hours 200
 ```
 that creates a certificate file valid for 200 hours: ```voms_proxy.txt```
 
-Now you can submit the condor jobs using the python script, [```HTCondor_submit.py```](https://github.com/denerslemos/pPbskims/blob/main/HTCondor_submit.py):
+Now you can submit the condor jobs using the python script, [```HTCondor_submit.py```](https://github.com/denerslemos/pPb2016skims/blob/main/HTCondor_submit.py):
 
 ```
 python HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z
 ```
 
-- input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPbskims/tree/main/DATA_SAMPLES) each .root input will be a job
+- input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPb2016skims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPb2016skims/tree/main/DATA_SAMPLES) each .root input will be a job
 
 - output_name_file: output file name (use it without the .root extension), it will automatically include a counter for each input. You can use paths to save on EOS.
 
