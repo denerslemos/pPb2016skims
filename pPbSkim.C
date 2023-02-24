@@ -49,7 +49,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("root://osg-se.sprace.org.br/%s",file_chain.c_str()));}
 	inputfile.close();
 	// Maximum size of arrays
-	const Int_t nMaxJet = 200;				// Maximum number of jets in an event
+	const Int_t nMaxJet = 500;				// Maximum number of jets in an event
 	const Int_t nMaxTrack = 2000;		// Maximum number of tracks in an event
 	
 	// Define trees to be read from the files
@@ -90,8 +90,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *hiVzBranch;						// Branch for vertex z-position
 	TBranch *hiHFplusBranch;					// Branch for HF+ energy deposity
 	TBranch *hiHFminusBranch;					// Branch for HF- energy deposity
+	TBranch *hiHFplusEta4Branch;				// Branch for HF+ energy deposity for |eta| > 4
+	TBranch *hiHFminusEta4Branch;				// Branch for HF- energy deposity for |eta| > 4
 	TBranch *hiZDCplusBranch;					// Branch for ZDC+ energy deposity
 	TBranch *hiZDCminusBranch;					// Branch for ZDC- energy deposity
+
 	TBranch *ptHatBranch;						// Branch for pT hat
 	TBranch *eventWeightBranch;		 			// Branch for pthat weight for MC
 
@@ -102,6 +105,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t vertexZ;			 // Vertex z-position
 	Float_t hiHFplus;			 // transverse energy sum of HF+ tower;
 	Float_t hiHFminus;			 // transverse energy sum of HF- tower;
+	Float_t hiHFplusEta4;		 // transverse energy sum of HF+ tower for |eta| > 4;
+	Float_t hiHFminusEta4;		 // transverse energy sum of HF- tower for |eta| > 4;
+
 	Float_t hiZDCplus;			 // energy deposit in ZDC+;
 	Float_t hiZDCminus;			 // energy deposit in ZDC-;
 	Float_t ptHat;				 // pT hat
@@ -288,6 +294,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTree->SetBranchAddress("hiHFplus",&hiHFplus,&hiHFplusBranch);
 	heavyIonTree->SetBranchStatus("hiHFminus",1);
 	heavyIonTree->SetBranchAddress("hiHFminus",&hiHFminus,&hiHFminusBranch);
+	heavyIonTree->SetBranchStatus("hiHFplusEta4",1);
+	heavyIonTree->SetBranchAddress("hiHFplusEta4",&hiHFplusEta4,&hiHFplusEta4Branch);
+	heavyIonTree->SetBranchStatus("hiHFminusEta4",1);
+	heavyIonTree->SetBranchAddress("hiHFminusEta4",&hiHFminusEta4,&hiHFminusEta4Branch);
 	heavyIonTree->SetBranchStatus("hiZDCplus",1);
 	heavyIonTree->SetBranchAddress("hiZDCplus",&hiZDCplus,&hiZDCplusBranch);
 	heavyIonTree->SetBranchStatus("hiZDCminus",1);
@@ -487,6 +497,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("vz",&vertexZ,"vz/F");
 	heavyIonTreeOutput->Branch("hiHFplus",&hiHFplus,"hiHFplus/F");
 	heavyIonTreeOutput->Branch("hiHFminus",&hiHFminus,"hiHFminus/F");
+	heavyIonTreeOutput->Branch("hiHFplusEta4",&hiHFplusEta4,"hiHFplusEta4/F");
+	heavyIonTreeOutput->Branch("hiHFminusEta4",&hiHFminusEta4,"hiHFminusEta4/F");	
 	heavyIonTreeOutput->Branch("hiZDCplus",&hiZDCplus,"hiZDCplus/F");
 	heavyIonTreeOutput->Branch("hiZDCminus",&hiZDCminus,"hiZDCminus/F");
 	
