@@ -15,6 +15,7 @@ Inside of the src folder, download the code using
 ```
 git clone git@github.com:denerslemos/pPb2016skims.git
 cd pPb2016skims
+mkdir cond
 ```
 Before compile the code you must check the [sub_skim.sh](https://github.com/denerslemos/pPb2016skims/blob/main/sub_skim.sh) lines 4 (CMSSW/src) and 6 (.../pPb2016skims) and replace by your own folders.
 
