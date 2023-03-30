@@ -110,6 +110,13 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	Float_t hiZDCplus;			 // energy deposit in ZDC+;
 	Float_t hiZDCminus;			 // energy deposit in ZDC-;
+
+	Float_t hi_FRG;			 // FRG (Forward Rapidity Gap) variable for UPC;
+	Float_t hi_FRG_noNsel;	 // FRG (Forward Rapidity Gap) variable for UPC without N select in 2.5<|eta|<3.0;
+	Float_t hi_BRG;			 // BRG (Backward Rapidity Gap) variable for UPC
+	Float_t hi_BRG_noNsel; 	 // BRG (Backward Rapidity Gap) variable for UPC without N select in 2.5<|eta|<3.0;
+    double const pfE[20] = {13.4, 16.4, 15.3, 16.9, 13.4, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 13.4, 15.9, 31.7, 17.1, 13.6};
+
 	Float_t ptHat;				 // pT hat
 	Float_t eventWeight;			 // jet weight in the tree
 
@@ -259,22 +266,26 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *genTrackSubeventBranch;			 // Branch for generator level track subevent indices (0 = PYTHIA, (>0) = other MC)
 	
 	// Leaves for generator level track tree
-	vector<float> *genTrackPtArray;			 // Array for generator level track pT
-	vector<float> *genTrackPhiArray;		 // Array for generator level track phi
-	vector<float> *genTrackEtaArray;		 // Array for generator level track eta
-	vector<int>	 *genTrackPdgArray;		 // Array for generator level track PDG code
-	vector<int>	 *genTrackChargeArray;		 // Array for generator level track charges
-	vector<int>	 *genTrackSubeventArray;	 // Array for generator level track subevent indices (0 = PYTHIA, (>0) = other MC)
+	vector<float> *genTrackPtArray;			 // Vector for generator level track pT
+	vector<float> *genTrackPhiArray;		 // Vector for generator level track phi
+	vector<float> *genTrackEtaArray;		 // Vector for generator level track eta
+	vector<int>	 *genTrackPdgArray;			 // Vector for generator level track PDG code
+	vector<int>	 *genTrackChargeArray;		 // Vector for generator level track charges
+	vector<int>	 *genTrackSubeventArray;	 // Vector for generator level track subevent indices (0 = PYTHIA, (>0) = other MC)
 	
 	// Branches for particle flow candidate ID tree
 	TBranch *particleFlowCandidatePtBranch;		// Branch for particle flow candidate pT
 	TBranch *particleFlowCandidateEtaBranch;	 // Branch for particle flow candidate eta
 	TBranch *particleFlowCandidatePhiBranch;	 // Branch for particle flow candidate phi
+	TBranch *particleFlowCandidateEnergyBranch;	 // Branch for particle flow candidate energy
+	TBranch *particleFlowCandidateIDBranch;	 // Branch for particle flow candidate ID --> See https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideParticleFlow#Particle_Identification_and_Reco
 	
 	// Leaves for particle flow candidate tree
-	vector<float> *particleFlowCandidatePtVector;		 // Vector for particle flow candidate pT
+	vector<float> *particleFlowCandidatePtVector;		// Vector for particle flow candidate pT
 	vector<float> *particleFlowCandidateEtaVector;		// Vector for particle flow candidate eta
 	vector<float> *particleFlowCandidatePhiVector;		// Vector for particle flow candidate phi
+	vector<float> *particleFlowCandidateEnergyVector;	// Vector for particle flow candidate energy
+	vector<int> *particleFlowCandidateIDVector;			// Vector for particle flow candidate ID --> See https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideParticleFlow#Particle_Identification_and_Reco
 
 	// ========================================== //
 	// Read all the branches from the input trees //
@@ -483,6 +494,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	particleFlowCandidateTree->SetBranchAddress("pfPhi",&particleFlowCandidatePhiVector,&particleFlowCandidatePhiBranch);
 	particleFlowCandidateTree->SetBranchStatus("pfEta",1);
 	particleFlowCandidateTree->SetBranchAddress("pfEta",&particleFlowCandidateEtaVector,&particleFlowCandidateEtaBranch);
+	particleFlowCandidateTree->SetBranchStatus("pfEnergy",1);
+	particleFlowCandidateTree->SetBranchAddress("pfEnergy",&particleFlowCandidateEnergyVector,&particleFlowCandidateEnergyBranch);
+	particleFlowCandidateTree->SetBranchStatus("pfId",1);
+	particleFlowCandidateTree->SetBranchAddress("pfId",&particleFlowCandidateIDVector,&particleFlowCandidateIDBranch);
 
 	// ========================================== //
 	//			 Define output trees
@@ -501,6 +516,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("hiHFminusEta4",&hiHFminusEta4,"hiHFminusEta4/F");	
 	heavyIonTreeOutput->Branch("hiZDCplus",&hiZDCplus,"hiZDCplus/F");
 	heavyIonTreeOutput->Branch("hiZDCminus",&hiZDCminus,"hiZDCminus/F");
+	heavyIonTreeOutput->Branch("hi_FRG",&hi_FRG,"hi_FRG/F");	
+	heavyIonTreeOutput->Branch("hi_FRG_noNsel",&hi_FRG_noNsel,"hi_FRG_noNsel/F");
+	heavyIonTreeOutput->Branch("hi_BRG",&hi_BRG,"hi_BRG/F");
+	heavyIonTreeOutput->Branch("hi_BRG_noNsel",&hi_BRG_noNsel,"hi_BRG_noNsel/F");
+
 	
 	// Event plane
 	TTree *checkFlatteningTreeOutput = new TTree("tree","");
@@ -767,7 +787,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 		if(multsel==false) continue;		
 
-		heavyIonTreeOutput->Fill();
+		double track_gap = 10000.0;
+
 		hltTreeOutput->Fill();
 		skimTreeOutput->Fill();
 
@@ -982,7 +1003,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
     	nTracksOutput = nTracks;
     	iTrackOutput = 0;
     	for(int iTrack = 0; iTrack < nTracks; iTrack++){
-      
+
+    		// Difference with respect eta = -5.0
+    		if((trackEtaArray[iTrack]+5.0 < track_gap) && (trackPtArray[iTrack] > 0.2) && (trackHighPurityArray[iTrack] == 1)) {track_gap = trackEtaArray[iTrack]+5.0;}
+
     		passTrackCuts = true;
       
     		// Do basic track cuts for the reconstructed tracks
@@ -1017,8 +1041,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
     	if(is_MC){
     		for(int iTrack = 0; iTrack < genTrackPtArray->size(); iTrack++){
     			// Cut away low pT tracks and tracks with eta outside of tracker acceptance
-			if(TMath::Abs(genTrackEtaArray->at(iTrack)) >= 2.4) continue; //acceptance of the tracker
-			if(genTrackPtArray->at(iTrack) <= 0.4) continue;   // Minimum track pT
+				if(TMath::Abs(genTrackEtaArray->at(iTrack)) >= 2.4) continue; //acceptance of the tracker
+				if(genTrackPtArray->at(iTrack) <= 0.4) continue;   // Minimum track pT
 		        // Fill the output vectors with gen particles surviving the cuts
         		genTrackPtVector->push_back(genTrackPtArray->at(iTrack));
         		genTrackPhiVector->push_back(genTrackPhiArray->at(iTrack));
@@ -1039,10 +1063,41 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
     	} // Filling gen tracks for MC
 
-   		// Clear the vectors before the next event! Otherwise all the tracks pile up cumulatively
-    	//particleFlowCandidatePtOutputVector->clear();
-    	//particleFlowCandidatePhiOutputVector->clear();
-    	//particleFlowCandidateEtaOutputVector->clear();
+        TH1D htempRG("htempRG", "htempRG", 20, -5., 5.);
+        TH1D htempRG_noNsel("htempRG_noNsel", "htempRG_noNsel", 20, -5., 5.);
+
+    	for(int iPF = 0; iPF < particleFlowCandidateEnergyVector->size(); iPF++){
+
+    		double pfeta = particleFlowCandidateEtaVector->at(iPF);
+            double fabspfeta = fabs(pfeta);
+            double pfenergy = particleFlowCandidateEnergyVector->at(iPF);
+            int pfid = particleFlowCandidateIDVector->at(iPF);
+                
+            if(fabspfeta < 2.5){htempRG.Fill(pfeta, pfenergy); htempRG_noNsel.Fill(pfeta, pfenergy);
+            }else if(fabspfeta >= 2.5 && fabspfeta < 3.0){htempRG_noNsel.Fill(pfeta, pfenergy); if(pfid == 5){htempRG.Fill(pfeta, pfenergy);}
+            }else if(fabspfeta >= 3.0){htempRG.Fill(pfeta, pfenergy); htempRG_noNsel.Fill(pfeta, pfenergy);}
+
+    	}
+
+    	float FRG = -99.; 
+    	float FRG_noNsel = -99.; 
+    	float BRG = -99.; 
+    	float BRG_noNsel = -99.;
+
+    	// FRG
+        for(int i = 0; i < 15; i++){ if( htempRG.GetBinContent(i+1) > pfE[i] || (track_gap < 0.5*(i+1) ) ){ FRG = 0.5 * i; break;} }
+        for(int i = 0; i < 15; i++){ if( htempRG_noNsel.GetBinContent(i+1) > pfE[i] || (track_gap < 0.5*(i+1) ) ){ FRG_noNsel = 0.5 * i; break;} }
+        // BRG
+		for(int i = 0; i < 20; i++){if ( htempRG.GetBinContent(20-i) > pfE[19-i] ) { BRG = 0.5 * i; break; } }
+		for(int i = 0; i < 20; i++){if ( htempRG_noNsel.GetBinContent(20-i) > pfE[19-i] ) { BRG_noNsel = 0.5 * i; break; } }
+
+		hi_FRG = FRG;
+		hi_FRG_noNsel = FRG_noNsel;
+		hi_BRG = BRG;
+		hi_FRG_noNsel = BRG_noNsel;
+
+		heavyIonTreeOutput->Fill();
+
 
 	} // End loop over events
 
