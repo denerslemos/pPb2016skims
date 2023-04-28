@@ -18,7 +18,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
-	float jetptmin = 30.0;
+	float jetptmin = 15.0;
 	float jetetamin = 4.0;
 
 	if(is_MC){
