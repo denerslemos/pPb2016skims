@@ -115,7 +115,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t hi_FRG_noNsel;	 // FRG (Forward Rapidity Gap) variable for UPC without N select in 2.5<|eta|<3.0;
 	Float_t hi_BRG;			 // BRG (Backward Rapidity Gap) variable for UPC
 	Float_t hi_BRG_noNsel; 	 // BRG (Backward Rapidity Gap) variable for UPC without N select in 2.5<|eta|<3.0;
-    double const pfE[20] = {13.4, 16.4, 15.3, 16.9, 13.4, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 13.4, 15.9, 31.7, 17.1, 13.6};
+        double const pfE[20] = {13.4, 16.4, 15.3, 16.9, 13.4, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 13.4, 15.9, 31.7, 17.1, 13.6};
 
 	Float_t ptHat;				 // pT hat
 	Float_t eventWeight;			 // jet weight in the tree
@@ -1015,7 +1015,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
     		if(fabs(trackVertexDistanceZArray[iTrack]/trackVertexDistanceZErrorArray[iTrack]) > 5.0) passTrackCuts = false;
     		if(fabs(trackVertexDistanceXYArray[iTrack]/trackVertexDistanceXYErrorArray[iTrack]) > 5.0) passTrackCuts = false;
     		if(fabs(trackEtaArray[iTrack]) >= 2.4) passTrackCuts = false;  //acceptance of the tracker
-    		if(trackPtArray[iTrack] <= 0.4) passTrackCuts = false;   // Minimum track pT
+    		if(trackPtArray[iTrack] <= 0.2) passTrackCuts = false;   // Minimum track pT
       
     		if(passTrackCuts){
     			trackPtOutput[iTrackOutput] = trackPtArray[iTrack];
@@ -1042,7 +1042,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
     		for(int iTrack = 0; iTrack < genTrackPtArray->size(); iTrack++){
     			// Cut away low pT tracks and tracks with eta outside of tracker acceptance
 				if(TMath::Abs(genTrackEtaArray->at(iTrack)) >= 2.4) continue; //acceptance of the tracker
-				if(genTrackPtArray->at(iTrack) <= 0.4) continue;   // Minimum track pT
+				if(genTrackPtArray->at(iTrack) <= 0.2) continue;   // Minimum track pT
 		        // Fill the output vectors with gen particles surviving the cuts
         		genTrackPtVector->push_back(genTrackPtArray->at(iTrack));
         		genTrackPhiVector->push_back(genTrackPhiArray->at(iTrack));
