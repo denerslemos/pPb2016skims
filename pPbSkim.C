@@ -2,6 +2,7 @@
 #include "uiclogo.h"	    // call UIC logo and initialization
 #include "CATree.h" 	    // call re-cluster for WTA axis: see https://github.com/FHead/PhysicsMiniProjects/tree/master/JetSmallSystem/24622_Recluster
 #include "ntrkoff.h"        // get Ntrk offline
+#define pimass 0.1396
 
 /*
 Main skim pPb data and MC
@@ -19,7 +20,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
 	float jetptmin = 15.0;
-	float jetetamin = 4.0;
+	float jetetamin = 5.2;
 
 	if(is_MC){
 		jetptmin = 0.0;
@@ -70,6 +71,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	// add all the trees to the chain
 	for (std::vector<TString>::iterator listIterator = file_name_vector.begin(); listIterator != file_name_vector.end(); listIterator++){
+		TFile testfile(*listIterator, "READ"); 
+		if(testfile.IsZombie() || testfile.TestBit(TFile::kRecovered)) continue;
 		cout << "Adding file " << *listIterator << " to the chains" << endl;
 		hltTree->Add(*listIterator);
 		trackTree->Add(*listIterator);
@@ -183,6 +186,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *jetPhiBranchWTA[nJetTrees];			// Branch for jet phi with WTA axis
 	TBranch *jetEtaBranch[nJetTrees];				// Branch for jet eta
 	TBranch *jetEtaBranchWTA[nJetTrees];			// Branch for jet eta with WTA axis
+	TBranch *jetMassBranch[nJetTrees];				// Branch for jet mass
 
 	TBranch *jetRefPtBranch[nJetTrees];				// Branch for reference generator level pT for a reconstructed jet
 	TBranch *jetRefEtaBranch[nJetTrees];			// Branch for reference generator level eta for a reconstructed jet
@@ -190,6 +194,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *jetRefFlavorBranch[nJetTrees];			// Branch for flavor for the parton initiating the jet
 	TBranch *jetRefFlavorForBBranch[nJetTrees];		// Branch for flavor for the parton initiating the jet
 	TBranch *jetRefSubidBranch[nJetTrees];		    // Branch for jet subid
+	TBranch *jetRefMassBranch[nJetTrees];			// Branch for reference generator level mass for a reconstructed jet
 
 	TBranch *nGenJetsBranch[nJetTrees];				// Branch for the number of generator level jets in an event
 	TBranch *genJetPtBranch[nJetTrees];				// Branch for the generator level jet pT
@@ -197,8 +202,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *genJetEtaBranchWTA[nJetTrees];			// Branch for the generetor level jet eta with WTA axis
 	TBranch *genJetPhiBranch[nJetTrees];			// Branch for the generator level jet phi
 	TBranch *genJetPhiBranchWTA[nJetTrees];			// Branch for the generator level jet phi with WTA axis
-	TBranch *genJetSubidBranch[nJetTrees];                // Branch for the generator level jet subid
-	TBranch *genJetMatchIndexBranch[nJetTrees];           // Branch for the generator level jet matched index
+	TBranch *genJetSubidBranch[nJetTrees];          // Branch for the generator level jet subid
+	TBranch *genJetMatchIndexBranch[nJetTrees];     // Branch for the generator level jet matched index
+	TBranch *genJetMassBranch[nJetTrees];			// Branch for the generator level jet mass
 	
 	// Leaves for jet tree
 	Int_t nJets[nJetTrees];									// number of jets in an event
@@ -208,6 +214,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t jetPhiArrayWTA[nJetTrees][nMaxJet] = {{0}};		// phi of all the jets in an event	with WTA axis
 	Float_t jetEtaArray[nJetTrees][nMaxJet] = {{0}};		// eta of all the jets in an event
 	Float_t jetEtaArrayWTA[nJetTrees][nMaxJet] = {{0}};		// eta of all the jets in an event	with WTA axis
+	Float_t jetMassArray[nJetTrees][nMaxJet] = {{0}};		// Mass of all the jets in an event
 
 	Float_t jetRefPtArray[nJetTrees][nMaxJet] = {{0}};		// reference generator level pT for a reconstructed jet
 	Float_t jetRefEtaArray[nJetTrees][nMaxJet] = {{0}};		// reference generator level pT for a reconstructed jet
@@ -215,6 +222,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Int_t jetRefFlavorArray[nJetTrees][nMaxJet] = {{0}};	// flavor for initiating parton for the reference gen jet
 	Int_t jetRefFlavorForBArray[nJetTrees][nMaxJet] = {{0}};// heavy flavor for initiating parton for the reference gen jet
 	Int_t jetRefSubidArray[nJetTrees][nMaxJet] = {{0}};     // jet subid
+	Float_t jetRefMassArray[nJetTrees][nMaxJet] = {{0}};	// reference generator level mass for a reconstructed jet
 
 	Int_t nGenJets[nJetTrees];								// number of generator level jets in an event
 	Float_t genJetPtArray[nJetTrees][nMaxJet] = {{0}};		// pT of all the generator level jets in an event
@@ -224,7 +232,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t genJetEtaArrayWTA[nJetTrees][nMaxJet] = {{0}};	// eta of all the generator level jets in an event with WTA axis
 	Int_t genJetSubidArray[nJetTrees][nMaxJet] = {{0}};     // subid of all the generator level jets in an event
 	Int_t genJetMatchIndexArray[nJetTrees][nMaxJet] = {{0}};// matched index of all the generator level jets in an event
-	
+	Float_t genJetMassArray[nJetTrees][nMaxJet] = {{0}};	// mass of all the generator level jets in an event
+
 	// Branches for track tree
 	TBranch *nTracksBranch;									// Branch for number of tracks
 	TBranch *trackPtBranch;									// Branch for track pT
@@ -264,6 +273,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *genTrackPdgBranch;				 // Branch for generator level track PDG code
 	TBranch *genTrackChargeBranch;				 // Branch for generator level track charges
 	TBranch *genTrackSubeventBranch;			 // Branch for generator level track subevent indices (0 = PYTHIA, (>0) = other MC)
+	TBranch *genTrackMassBranch;				 // Branch for generator level track masses
 	
 	// Leaves for generator level track tree
 	vector<float> *genTrackPtArray;			 // Vector for generator level track pT
@@ -272,6 +282,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	vector<int>	 *genTrackPdgArray;			 // Vector for generator level track PDG code
 	vector<int>	 *genTrackChargeArray;		 // Vector for generator level track charges
 	vector<int>	 *genTrackSubeventArray;	 // Vector for generator level track subevent indices (0 = PYTHIA, (>0) = other MC)
+	vector<float> *genTrackMassArray;		 // Vector for generator level track mass
 	
 	// Branches for particle flow candidate ID tree
 	TBranch *particleFlowCandidatePtBranch;		// Branch for particle flow candidate pT
@@ -279,6 +290,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *particleFlowCandidatePhiBranch;	 // Branch for particle flow candidate phi
 	TBranch *particleFlowCandidateEnergyBranch;	 // Branch for particle flow candidate energy
 	TBranch *particleFlowCandidateIDBranch;	 // Branch for particle flow candidate ID --> See https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideParticleFlow#Particle_Identification_and_Reco
+	TBranch *particleFlowCandidateMassBranch;	 // Branch for particle flow candidate mass
 	
 	// Leaves for particle flow candidate tree
 	vector<float> *particleFlowCandidatePtVector;		// Vector for particle flow candidate pT
@@ -286,6 +298,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	vector<float> *particleFlowCandidatePhiVector;		// Vector for particle flow candidate phi
 	vector<float> *particleFlowCandidateEnergyVector;	// Vector for particle flow candidate energy
 	vector<int> *particleFlowCandidateIDVector;			// Vector for particle flow candidate ID --> See https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideParticleFlow#Particle_Identification_and_Reco
+	vector<float> *particleFlowCandidateMassVector;	    // Vector for particle flow candidate mass
 
 	// ========================================== //
 	// Read all the branches from the input trees //
@@ -394,6 +407,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		// Jet eta with E-scheme, WTA axes calculated later
 		jetTree[iJetType]->SetBranchStatus("jteta",1);
 		jetTree[iJetType]->SetBranchAddress("jteta",&jetEtaArray[iJetType],&jetEtaBranch[iJetType]);
+		
+		// jet mass
+		jetTree[iJetType]->SetBranchStatus("jtm",1);
+		jetTree[iJetType]->SetBranchAddress("jtm",&jetMassArray[iJetType],&jetMassBranch[iJetType]);	
 	
 		// If we are looking at Monte Carlo, connect the reference pT and parton arrays
 		if(is_MC){
@@ -414,6 +431,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTree[iJetType]->SetBranchAddress("refparton_flavorForB", &jetRefFlavorForBArray[iJetType], &jetRefFlavorForBBranch[iJetType]);
 			jetTree[iJetType]->SetBranchStatus("subid",1);
 			jetTree[iJetType]->SetBranchAddress("subid", &jetRefSubidArray[iJetType], &jetRefSubidBranch[iJetType]);
+			jetTree[iJetType]->SetBranchStatus("refm",1);
+			jetTree[iJetType]->SetBranchAddress("refm",&jetRefMassArray[iJetType],&jetRefMassBranch[iJetType]);	
 			
 			// Gen jet variables
 			jetTree[iJetType]->SetBranchStatus("ngen",1);
@@ -428,6 +447,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTree[iJetType]->SetBranchAddress("genmatchindex",&genJetMatchIndexArray[iJetType],&genJetMatchIndexBranch[iJetType]);
 			jetTree[iJetType]->SetBranchStatus("gensubid",1);
 			jetTree[iJetType]->SetBranchAddress("gensubid",&genJetSubidArray[iJetType],&genJetSubidBranch[iJetType]);
+			jetTree[iJetType]->SetBranchStatus("genm",1);
+			jetTree[iJetType]->SetBranchAddress("genm",&genJetMassArray[iJetType],&genJetMassBranch[iJetType]);	
 			
 		}
 		
@@ -483,6 +504,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		genTrackTree->SetBranchAddress("chg",&genTrackChargeArray,&genTrackChargeBranch);
 		genTrackTree->SetBranchStatus("sube",1);
 		genTrackTree->SetBranchAddress("sube",&genTrackSubeventArray,&genTrackSubeventBranch);
+		genTrackTree->SetBranchStatus("mass",1);
+		genTrackTree->SetBranchAddress("mass",&genTrackMassArray,&genTrackMassBranch);
 		
 	}
 	
@@ -498,6 +521,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	particleFlowCandidateTree->SetBranchAddress("pfEnergy",&particleFlowCandidateEnergyVector,&particleFlowCandidateEnergyBranch);
 	particleFlowCandidateTree->SetBranchStatus("pfId",1);
 	particleFlowCandidateTree->SetBranchAddress("pfId",&particleFlowCandidateIDVector,&particleFlowCandidateIDBranch);
+	particleFlowCandidateTree->SetBranchStatus("pfM",1);
+	particleFlowCandidateTree->SetBranchAddress("pfM",&particleFlowCandidateMassVector,&particleFlowCandidateMassBranch);
 
 	// ========================================== //
 	//			 Define output trees
@@ -524,18 +549,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	
 	// Event plane
 	TTree *checkFlatteningTreeOutput = new TTree("tree","");
-	/*
-	checkFlatteningTreeOutput->Branch("epang",&eventPlaneAngle,Form("%s",EPNames.Data()));
-	checkFlatteningTreeOutput->Branch("q",&eventPlaneQ,Form("%s",EPNames.Data()));
-	checkFlatteningTreeOutput->Branch("qx",&eventPlaneQx,Form("%s",EPNames.Data()));
-	checkFlatteningTreeOutput->Branch("qy",&eventPlaneQy,Form("%s",EPNames.Data()));
-	checkFlatteningTreeOutput->Branch("mult",&eventPlaneMultiplicity,Form("%s",EPNames.Data()));
-	*/
-	Float_t epang_HFm2, epang_HFp2,epang_HFm3, epang_HFp3, epang_HFm4, epang_HFp4, epang_HFm5, epang_HFp5, epang_HFm6, epang_HFp6;	
-	Float_t q_HFm2, q_HFp2,q_HFm3, q_HFp3, q_HFm4, q_HFp4, q_HFm5, q_HFp5, q_HFm6, q_HFp6;
-	Float_t qx_HFm2, qx_HFp2,qx_HFm3, qx_HFp3, qx_HFm4, qx_HFp4, qx_HFm5, qx_HFp5, qx_HFm6, qx_HFp6;
-	Float_t qy_HFm2, qy_HFp2,qy_HFm3, qy_HFp3, qy_HFm4, qy_HFp4, qy_HFm5, qy_HFp5, qy_HFm6, qy_HFp6;
-	Float_t mult_HFm2, mult_HFp2,mult_HFm3, mult_HFp3, mult_HFm4, mult_HFp4, mult_HFm5, mult_HFp5, mult_HFm6, mult_HFp6;
+	Float_t epang_HFm2, epang_HFp2,epang_HFm3, epang_HFp3, epang_HFm4, epang_HFp4;	
+	Float_t q_HFm2, q_HFp2,q_HFm3, q_HFp3, q_HFm4, q_HFp4;
+	Float_t qx_HFm2, qx_HFp2,qx_HFm3, qx_HFp3, qx_HFm4, qx_HFp4;
+	Float_t qy_HFm2, qy_HFp2,qy_HFm3, qy_HFp3, qy_HFm4, qy_HFp4;
+	Float_t mult_HFm2, mult_HFp2,mult_HFm3, mult_HFp3, mult_HFm4, mult_HFp4;
 
 	checkFlatteningTreeOutput->Branch("epang_HFm2",&epang_HFm2,"epang_HFm2/F");
 	checkFlatteningTreeOutput->Branch("epang_HFp2",&epang_HFp2,"epang_HFp2/F");
@@ -543,10 +561,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	checkFlatteningTreeOutput->Branch("epang_HFp3",&epang_HFp3,"epang_HFp3/F");
 	checkFlatteningTreeOutput->Branch("epang_HFm4",&epang_HFm4,"epang_HFm4/F");
 	checkFlatteningTreeOutput->Branch("epang_HFp4",&epang_HFp4,"epang_HFp4/F");
-	checkFlatteningTreeOutput->Branch("epang_HFm5",&epang_HFm5,"epang_HFm5/F");
-	checkFlatteningTreeOutput->Branch("epang_HFp5",&epang_HFp5,"epang_HFp5/F");
-	checkFlatteningTreeOutput->Branch("epang_HFm6",&epang_HFm6,"epang_HFm6/F");
-	checkFlatteningTreeOutput->Branch("epang_HFp6",&epang_HFp6,"epang_HFp6/F");
 
 	checkFlatteningTreeOutput->Branch("q_HFm2",&q_HFm2,"q_HFm2/F");
 	checkFlatteningTreeOutput->Branch("q_HFp2",&q_HFp2,"q_HFp2/F");
@@ -554,10 +568,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	checkFlatteningTreeOutput->Branch("q_HFp3",&q_HFp3,"q_HFp3/F");
 	checkFlatteningTreeOutput->Branch("q_HFm4",&q_HFm4,"q_HFm4/F");
 	checkFlatteningTreeOutput->Branch("q_HFp4",&q_HFp4,"q_HFp4/F");
-	checkFlatteningTreeOutput->Branch("q_HFm5",&q_HFm5,"q_HFm5/F");
-	checkFlatteningTreeOutput->Branch("q_HFp5",&q_HFp5,"q_HFp5/F");
-	checkFlatteningTreeOutput->Branch("q_HFm6",&q_HFm6,"q_HFm6/F");
-	checkFlatteningTreeOutput->Branch("q_HFp6",&q_HFp6,"q_HFp6/F");
 
 	checkFlatteningTreeOutput->Branch("qx_HFm2",&qx_HFm2,"qx_HFm2/F");
 	checkFlatteningTreeOutput->Branch("qx_HFp2",&qx_HFp2,"qx_HFp2/F");
@@ -565,10 +575,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	checkFlatteningTreeOutput->Branch("qx_HFp3",&qx_HFp3,"qx_HFp3/F");
 	checkFlatteningTreeOutput->Branch("qx_HFm4",&qx_HFm4,"qx_HFm4/F");
 	checkFlatteningTreeOutput->Branch("qx_HFp4",&qx_HFp4,"qx_HFp4/F");
-	checkFlatteningTreeOutput->Branch("qx_HFm5",&qx_HFm5,"qx_HFm5/F");
-	checkFlatteningTreeOutput->Branch("qx_HFp5",&qx_HFp5,"qx_HFp5/F");
-	checkFlatteningTreeOutput->Branch("qx_HFm6",&qx_HFm6,"qx_HFm6/F");
-	checkFlatteningTreeOutput->Branch("qx_HFp6",&qx_HFp6,"qx_HFp6/F");
 
 	checkFlatteningTreeOutput->Branch("qy_HFm2",&qy_HFm2,"qy_HFm2/F");
 	checkFlatteningTreeOutput->Branch("qy_HFp2",&qy_HFp2,"qy_HFp2/F");
@@ -576,10 +582,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	checkFlatteningTreeOutput->Branch("qy_HFp3",&qy_HFp3,"qy_HFp3/F");
 	checkFlatteningTreeOutput->Branch("qy_HFm4",&qy_HFm4,"qy_HFm4/F");
 	checkFlatteningTreeOutput->Branch("qy_HFp4",&qy_HFp4,"qy_HFp4/F");
-	checkFlatteningTreeOutput->Branch("qy_HFm5",&qy_HFm5,"qy_HFm5/F");
-	checkFlatteningTreeOutput->Branch("qy_HFp5",&qy_HFp5,"qy_HFp5/F");
-	checkFlatteningTreeOutput->Branch("qy_HFm6",&qy_HFm6,"qy_HFm6/F");
-	checkFlatteningTreeOutput->Branch("qy_HFp6",&qy_HFp6,"qy_HFp6/F");
 
 	checkFlatteningTreeOutput->Branch("mult_HFm2",&mult_HFm2,"mult_HFm2/F");
 	checkFlatteningTreeOutput->Branch("mult_HFp2",&mult_HFp2,"mult_HFp2/F");
@@ -587,10 +589,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	checkFlatteningTreeOutput->Branch("mult_HFp3",&mult_HFp3,"mult_HFp3/F");
 	checkFlatteningTreeOutput->Branch("mult_HFm4",&mult_HFm4,"mult_HFm4/F");
 	checkFlatteningTreeOutput->Branch("mult_HFp4",&mult_HFp4,"mult_HFp4/F");
-	checkFlatteningTreeOutput->Branch("mult_HFm5",&mult_HFm5,"mult_HFm5/F");
-	checkFlatteningTreeOutput->Branch("mult_HFp5",&mult_HFp5,"mult_HFp5/F");
-	checkFlatteningTreeOutput->Branch("mult_HFm6",&mult_HFm6,"mult_HFm6/F");
-	checkFlatteningTreeOutput->Branch("mult_HFp6",&mult_HFp6,"mult_HFp6/F");
 	
 	// ptHat and event weight only for MC
 	if(is_MC){
@@ -632,6 +630,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t jetEtaArrayWTAOutput[nJetTrees][nMaxJet] = {{0}};			// eta of all the jets in an event	with WTA axis
 	Float_t jetRawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};			// raw jet pT for all the jets in an event
 	Float_t jetMaxTrackPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// maximum track pT inside a jet for all the jets in an event
+	Float_t jetMassArrayOutput[nJetTrees][nMaxJet] = {{0}};				// jet mass for all the jets in an event
+	Float_t jetMassCalcArrayOutput[nJetTrees][nMaxJet] = {{0}};			// jet mass calculated for all the jets in an event
 
 	Float_t jetRefPtArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level pT for a reconstructed jet
 	Float_t jetRefEtaArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level eta for a reconstructed jet
@@ -639,7 +639,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Int_t jetRefFlavorArrayOutput[nJetTrees][nMaxJet] = {{0}};			// flavor for initiating parton for the reference gen jet
 	Int_t jetRefFlavorForBArrayOutput[nJetTrees][nMaxJet] = {{0}};		// heavy flavor for initiating parton for the reference gen jet
 	Int_t jetRefSubidArrayOutput[nJetTrees][nMaxJet] = {{0}};           // jet subid
-
+	Float_t jetRefMassArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level mass for a reconstructed jet
 
 	Int_t nGenJetsOutput[nJetTrees];								 	// number of generator level jets in an event
 	Float_t genJetPtArrayOutput[nJetTrees][nMaxJet] = {{0}};			// pT of all the generator level jets in an event
@@ -649,24 +649,24 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t genJetEtaArrayWTAOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the generator level jets in an event with WTA axis
 	Int_t genJetSubidArrayOutput[nJetTrees][nMaxJet] = {{0}};     		// subid of all the generator level jets in an event
 	Int_t genJetMatchIndexArrayOutput[nJetTrees][nMaxJet] = {{0}};		// matched index of all the generator level jets in an event
-
-
+	Float_t genJetMassArrayOutput[nJetTrees][nMaxJet] = {{0}};			// jet mass for all the generator level jets in an event
+	Float_t genJetMassCalcArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass calculated for all the generator level jets in an event
+	
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 		
-		jetTreeOutput[iJetType] = new TTree("t","");
-		
+		jetTreeOutput[iJetType] = new TTree("t","");		
 		jetTreeOutput[iJetType]->Branch("nref",&nJetsOutput[iJetType],"nref/I");
 		jetTreeOutput[iJetType]->Branch("rawpt",&jetRawPtArrayOutput[iJetType],"rawpt[nref]/F");
 		jetTreeOutput[iJetType]->Branch("trackMax",&jetMaxTrackPtArrayOutput[iJetType],"trackMax[nref]/F");
+		jetTreeOutput[iJetType]->Branch("jtm",&jetMassArrayOutput[iJetType],"jtm[nref]/F");
+		jetTreeOutput[iJetType]->Branch("jtmcalc",&jetMassCalcArrayOutput[iJetType],"jtmcalc[nref]/F");
 
 		// Jet eta with E-scheme and WTA axes
 		jetTreeOutput[iJetType]->Branch("jtphi",&jetPhiArrayOutput[iJetType],"jtphi[nref]/F");
 		jetTreeOutput[iJetType]->Branch("WTAphi",&jetPhiArrayWTAOutput[iJetType],"WTAphi[nref]/F");
-		
 		// Jet phi with E-scheme and WTA axes
 		jetTreeOutput[iJetType]->Branch("jteta",&jetEtaArrayOutput[iJetType],"jteta[nref]/F");
 		jetTreeOutput[iJetType]->Branch("WTAeta",&jetEtaArrayWTAOutput[iJetType],"WTAeta[nref]/F");
-		
 		// If we are looking at Monte Carlo, connect the reference pT and parton arrays
 		if(is_MC){
 			jetTreeOutput[iJetType]->Branch("refpt",&jetRefPtArrayOutput[iJetType],"refpt[nref]/F");
@@ -675,21 +675,21 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTreeOutput[iJetType]->Branch("refparton_flavor", &jetRefFlavorArrayOutput[iJetType], "refparton_flavor[nref]/I");
 			jetTreeOutput[iJetType]->Branch("refparton_flavorForB", &jetRefFlavorForBArrayOutput[iJetType], "refparton_flavorForB[nref]/I");
 			jetTreeOutput[iJetType]->Branch("subid", &jetRefSubidArrayOutput[iJetType], "subid[nref]/I");
-		 
+			jetTreeOutput[iJetType]->Branch("refm",&jetRefMassArrayOutput[iJetType],"refm[nref]/F");
+	
 			jetTreeOutput[iJetType]->Branch("ngen",&nGenJetsOutput[iJetType],"ngen/I");
-			jetTreeOutput[iJetType]->Branch("genpt",&genJetPtArrayOutput[iJetType],"genpt[ngen]/F");
-			
+			jetTreeOutput[iJetType]->Branch("genpt",&genJetPtArrayOutput[iJetType],"genpt[ngen]/F");		
 			// Gen jet phi for e-scheme and WTA axes
 			jetTreeOutput[iJetType]->Branch("genphi",&genJetPhiArrayOutput[iJetType],"genphi[ngen]/F");
 			jetTreeOutput[iJetType]->Branch("WTAgenphi",&genJetPhiArrayWTAOutput[iJetType],"WTAgenphi[ngen]/F");
-			
 			// Gen jet eta for e-scheme and WTA axes
 			jetTreeOutput[iJetType]->Branch("geneta",&genJetEtaArrayOutput[iJetType],"geneta[ngen]/F");
 			jetTreeOutput[iJetType]->Branch("WTAgeneta",&genJetEtaArrayWTAOutput[iJetType],"WTAgeneta[ngen]/F");
-
 			// Gen match and subid
 			jetTreeOutput[iJetType]->Branch("genmatchindex",&genJetMatchIndexArrayOutput[iJetType],"genmatchindex[ngen]/F");
 			jetTreeOutput[iJetType]->Branch("gensubid",&genJetSubidArrayOutput[iJetType],"gensubid[ngen]/F");
+			jetTreeOutput[iJetType]->Branch("genm",&genJetMassArrayOutput[iJetType],"genm[ngen]/F");
+			jetTreeOutput[iJetType]->Branch("genmcalc",&genJetMassCalcArrayOutput[iJetType],"genmcalc[ngen]/F");
 		
 		} // Branches only for MC
 
@@ -780,8 +780,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		int multiplicity = get_Ntrkoff(nTracks, trackEtaArray, trackPtArray, trackChargeArray, trackHighPurityArray, trackPtErrorArray, trackVertexDistanceXYArray, trackVertexDistanceXYErrorArray, trackVertexDistanceZArray, trackVertexDistanceZErrorArray);
 
 		bool multsel = true;
-		if(ntrkoff==0){if(iEvent==0){cout << "No multiplicity cut" << endl;}}
-		if(ntrkoff==1){if(iEvent==0){cout << "MB: [0,185]" << endl;} if(multiplicity >= 185){multsel=false;}}
+		if(ntrkoff==0 || ntrkoff==1){if(iEvent==0){cout << "No multiplicity cut" << endl;}}
 		if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
 		if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
 
@@ -799,10 +798,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		epang_HFp3 = (float) eventPlaneAngle[74];
 		epang_HFm4 = (float) eventPlaneAngle[102];
 		epang_HFp4 = (float) eventPlaneAngle[103];
-		epang_HFm5 = (float) eventPlaneAngle[131];
-		epang_HFp5 = (float) eventPlaneAngle[132];
-		epang_HFm6 = (float) eventPlaneAngle[148];
-		epang_HFp6 = (float) eventPlaneAngle[149];
 
 		q_HFm2 = (float) eventPlaneQ[44];
 		q_HFp2 = (float) eventPlaneQ[45];
@@ -810,10 +805,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		q_HFp3 = (float) eventPlaneQ[74];
 		q_HFm4 = (float) eventPlaneQ[102];
 		q_HFp4 = (float) eventPlaneQ[103];
-		q_HFm5 = (float) eventPlaneQ[131];
-		q_HFp5 = (float) eventPlaneQ[132];
-		q_HFm6 = (float) eventPlaneQ[148];
-		q_HFp6 = (float) eventPlaneQ[149];
 
 		qx_HFm2 = (float) eventPlaneQx[44];
 		qx_HFp2 = (float) eventPlaneQx[45];
@@ -821,10 +812,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		qx_HFp3 = (float) eventPlaneQx[74];
 		qx_HFm4 = (float) eventPlaneQx[102];
 		qx_HFp4 = (float) eventPlaneQx[103];
-		qx_HFm5 = (float) eventPlaneQx[131];
-		qx_HFp5 = (float) eventPlaneQx[132];
-		qx_HFm6 = (float) eventPlaneQx[148];
-		qx_HFp6 = (float) eventPlaneQx[149];
 		
 		qy_HFm2 = (float) eventPlaneQy[44];
 		qy_HFp2 = (float) eventPlaneQy[45];
@@ -832,10 +819,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		qy_HFp3 = (float) eventPlaneQy[74];
 		qy_HFm4 = (float) eventPlaneQy[102];
 		qy_HFp4 = (float) eventPlaneQy[103];
-		qy_HFm5 = (float) eventPlaneQy[131];
-		qy_HFp5 = (float) eventPlaneQy[132];
-		qy_HFm6 = (float) eventPlaneQy[148];
-		qy_HFp6 = (float) eventPlaneQy[149];
 
 		mult_HFm2 = (float) eventPlaneMultiplicity[44];
 		mult_HFp2 = (float) eventPlaneMultiplicity[45];
@@ -843,10 +826,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		mult_HFp3 = (float) eventPlaneMultiplicity[74];
 		mult_HFm4 = (float) eventPlaneMultiplicity[102];
 		mult_HFp4 = (float) eventPlaneMultiplicity[103];
-		mult_HFm5 = (float) eventPlaneMultiplicity[131];
-		mult_HFp5 = (float) eventPlaneMultiplicity[132];
-		mult_HFm6 = (float) eventPlaneMultiplicity[148];
-		mult_HFp6 = (float) eventPlaneMultiplicity[149];
 
 		checkFlatteningTreeOutput->Fill();
 
@@ -859,14 +838,18 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			for(int iJet = 0; iJet < nJets[iJetType]; iJet++){ // loop over reco jets
 
 				passJetCuts = true;
-
+				
 				vector<Node *> NodesWTAScheme;
 				NodesWTAScheme.clear();
+				
+				vector<Node *> NodesCATree;
+				NodesCATree.clear();
 
 				double jetR = 0.4;
 				if( iJetType == 3 ) jetR = 0.3;
 				Float_t jetPhiWTA = -999;
 				Float_t jetEtaWTA = -999;
+				Float_t jetmassC = -999;
 
 				// recluster and find WTA axis
 				if( iJetType == 0){
@@ -877,11 +860,12 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
      					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - trackEtaArray[itrk];
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
-     					if(deltaR > jetR) continue;
+     					if(deltaR >= jetR) continue;
       					FourVector P;
-      					P.SetPtEtaPhiMass(trackPtArray[itrk], trackEtaArray[itrk], trackPhiArray[itrk], 0);
+      					P.SetPtEtaPhiMass(trackPtArray[itrk], trackEtaArray[itrk], trackPhiArray[itrk], pimass);
       					// Add into the node object vector
       					NodesWTAScheme.push_back(new Node(P));
+      					NodesCATree.push_back(new Node(P));
 					}					
 				}else{
 					for(int pfi = 0; pfi < particleFlowCandidatePtVector->size(); pfi++) {
@@ -891,24 +875,24 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
      					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - particleFlowCandidateEtaVector->at(pfi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
-     					if(deltaR > jetR) continue;
+     					if(deltaR >= jetR) continue;
       					FourVector P;
-      					P.SetPtEtaPhiMass(particleFlowCandidatePtVector->at(pfi), particleFlowCandidateEtaVector->at(pfi), particleFlowCandidatePhiVector->at(pfi), 0);
+      					P.SetPtEtaPhiMass(particleFlowCandidatePtVector->at(pfi), particleFlowCandidateEtaVector->at(pfi), particleFlowCandidatePhiVector->at(pfi), particleFlowCandidateMassVector->at(pfi));
       					// Add into the node object vector
       					NodesWTAScheme.push_back(new Node(P));
+      					NodesCATree.push_back(new Node(P));
    					}
 				}	
 
 				// Do the reclustering!
    				if(NodesWTAScheme.size()>0){
    					BuildCATree(NodesWTAScheme, -1, WTAScheme);
-   					//BuildCATree(NodesWTAScheme, -1, EScheme);
   					jetPhiWTA = NodesWTAScheme[0]->P.GetPhi();
   					jetEtaWTA = NodesWTAScheme[0]->P.GetEta();
+  					jetmassC = NodesWTAScheme[0]->P.GetMass();
   					delete NodesWTAScheme[0];
   					NodesWTAScheme.clear();
 				}
-
 
 				// Apply very basic jet cuts
 				if(jetRawPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minumum pT cut of 30 GeV
@@ -922,14 +906,16 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					jetEtaArrayOutput[iJetType][iJetOutput] = jetEtaArray[iJetType][iJet];
 					jetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTA;
 					jetMaxTrackPtArrayOutput[iJetType][iJetOutput] = jetMaxTrackPtArray[iJetType][iJet];
-				
+					jetMassArrayOutput[iJetType][iJetOutput] = jetMassArray[iJetType][iJet];
+					jetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassC;
 					if(is_MC){
 						jetRefPtArrayOutput[iJetType][iJetOutput] = jetRefPtArray[iJetType][iJet];
 						jetRefEtaArrayOutput[iJetType][iJetOutput] = jetRefEtaArray[iJetType][iJet];
 						jetRefPhiArrayOutput[iJetType][iJetOutput] = jetRefPhiArray[iJetType][iJet];
 						jetRefFlavorArrayOutput[iJetType][iJetOutput] = jetRefFlavorArray[iJetType][iJet];
 						jetRefFlavorForBArrayOutput[iJetType][iJetOutput] = jetRefFlavorForBArray[iJetType][iJet];
-						jetRefSubidArrayOutput[iJetType][iJetOutput] = jetRefSubidArray[iJetType][iJet];						
+						jetRefSubidArrayOutput[iJetType][iJetOutput] = jetRefSubidArray[iJetType][iJet];
+						jetRefMassArrayOutput[iJetType][iJetOutput] = jetRefMassArray[iJetType][iJet];						
 					}
 					iJetOutput++;
 				} else {nJetsOutput[iJetType]--;}
@@ -951,6 +937,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					if( iJetType == 3 ) jetRGen = 0.3;
 					Float_t jetPhiWTAGen = -999;
 					Float_t jetEtaWTAGen = -999;
+					Float_t jetmassCGen = -999;
 
 					for(int gpi = 0; gpi < genTrackPtArray->size(); gpi++) {
      					// Set particle kinematics
@@ -959,9 +946,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
      					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = genJetEtaArray[iJetType][iJet] - genTrackEtaArray->at(gpi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
-     					if(deltaR > jetRGen) continue;
+     					if(deltaR >= jetRGen) continue;
       					FourVector P;
-      					P.SetPtEtaPhiMass(genTrackPtArray->at(gpi), genTrackEtaArray->at(gpi), genTrackPhiArray->at(gpi), 0);
+      					P.SetPtEtaPhiMass(genTrackPtArray->at(gpi), genTrackEtaArray->at(gpi), genTrackPhiArray->at(gpi), genTrackMassArray->at(gpi));
       					// Add into the node object vector
       					NodesWTASchemeGen.push_back(new Node(P));
    					}
@@ -969,9 +956,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
    					// Do the reclustering!
    					if(NodesWTASchemeGen.size()>0){
    						BuildCATree(NodesWTASchemeGen, -1, WTAScheme);
-   						//BuildCATree(NodesWTASchemeGen, -1, EScheme);
   						jetPhiWTAGen = NodesWTASchemeGen[0]->P.GetPhi();
   						jetEtaWTAGen = NodesWTASchemeGen[0]->P.GetEta();
+  						jetmassCGen = NodesWTASchemeGen[0]->P.GetMass();
   						delete NodesWTASchemeGen[0];
   						NodesWTASchemeGen.clear();
 					}
@@ -990,6 +977,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					genJetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTAGen;
 					genJetSubidArrayOutput[iJetType][iJetOutput] = genJetSubidArray[iJetType][iJet];
 					genJetMatchIndexArrayOutput[iJetType][iJetOutput] = genJetMatchIndexArray[iJetType][iJet];
+					genJetMassArrayOutput[iJetType][iJetOutput] = genJetMassArray[iJetType][iJet];
+					genJetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassCGen;
 
 					iJetOutput++;
 
@@ -1103,6 +1092,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	// Write the skimmed trees to the output file
   	TFile *outputFile = new TFile(outputFileName, "RECREATE");
+  	outputFile->SetCompressionLevel(1);
 
 	gDirectory->mkdir("hiEvtAnalyzer");
 	gDirectory->cd("hiEvtAnalyzer");
@@ -1131,7 +1121,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		jetTreeOutput[iJetType]->Write();
 		gDirectory->cd("../");
 	} // Loop over jet types
-  
+
   	gDirectory->mkdir("ppTrack");
   	gDirectory->cd("ppTrack");
 	trackTreeOutput->Write();
@@ -1144,7 +1134,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		genTrackTreeOutput->Write();
 		gDirectory->cd("../");
 	}
-  
+
 	outputFile->Close();
 
 	cout << endl;
