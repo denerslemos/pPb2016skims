@@ -63,6 +63,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	jetTree[1] = new TChain("ak4PFJetAnalyzer/t");
 	jetTree[2] = new TChain("akCs4PFJetAnalyzer/t");
 	jetTree[3] = new TChain("ak3PFJetAnalyzer/t");
+	TChain *RhoTree = new TChain("hiFJRhoAnalyzer/t");
 	TChain *trackTree = new TChain("ppTrack/trackTree");
 	TChain *genTrackTree;
 	if(is_MC){genTrackTree = new TChain("HiGenParticleAna/hi");}
@@ -79,6 +80,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		heavyIonTree->Add(*listIterator);
 		for(int iJetType = 0; iJetType < nJetTrees; iJetType++){jetTree[iJetType]->Add(*listIterator);}
 		skimTree->Add(*listIterator);
+		RhoTree->Add(*listIterator);
 		if(is_MC){genTrackTree->Add(*listIterator);}
 		particleFlowCandidateTree->Add(*listIterator);
 		checkFlatteningTree->Add(*listIterator);
@@ -91,6 +93,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *eventBranch;					 	// Branch for event
 	TBranch *lumiBranch;						// Branch for lumi
 	TBranch *hiVzBranch;						// Branch for vertex z-position
+	TBranch *hiVxBranch;						// Branch for vertex x-position
+	TBranch *hiVyBranch;						// Branch for vertex y-position
 	TBranch *hiHFplusBranch;					// Branch for HF+ energy deposity
 	TBranch *hiHFminusBranch;					// Branch for HF- energy deposity
 	TBranch *hiHFplusEta4Branch;				// Branch for HF+ energy deposity for |eta| > 4
@@ -106,6 +110,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	ULong64_t event;			 // Event number
 	UInt_t lumi;				 // Luminosity block
 	Float_t vertexZ;			 // Vertex z-position
+	Float_t vertexX;			 // Vertex x-position
+	Float_t vertexY;			 // Vertex y-position
 	Float_t hiHFplus;			 // transverse energy sum of HF+ tower;
 	Float_t hiHFminus;			 // transverse energy sum of HF- tower;
 	Float_t hiHFplusEta4;		 // transverse energy sum of HF+ tower for |eta| > 4;
@@ -118,7 +124,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t hi_FRG_noNsel;	 // FRG (Forward Rapidity Gap) variable for UPC without N select in 2.5<|eta|<3.0;
 	Float_t hi_BRG;			 // BRG (Backward Rapidity Gap) variable for UPC
 	Float_t hi_BRG_noNsel; 	 // BRG (Backward Rapidity Gap) variable for UPC without N select in 2.5<|eta|<3.0;
-        double const pfE[20] = {13.4, 16.4, 15.3, 16.9, 13.4, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 13.4, 15.9, 31.7, 17.1, 13.6};
+	double const pfE[20] = {13.4, 16.4, 15.3, 16.9, 13.4, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 13.4, 15.9, 31.7, 17.1, 13.6};
 
 	Float_t ptHat;				 // pT hat
 	Float_t eventWeight;			 // jet weight in the tree
@@ -300,6 +306,18 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	vector<int> *particleFlowCandidateIDVector;			// Vector for particle flow candidate ID --> See https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideParticleFlow#Particle_Identification_and_Reco
 	vector<float> *particleFlowCandidateMassVector;	    // Vector for particle flow candidate mass
 
+	// Branches for rho
+	TBranch *RhoetamaxBranch;				 // Branch for rho etamax
+	TBranch *RhoetaminBranch;				 // Branch for rho etamin
+	TBranch *RhoBranch;				 		 // Branch for rho
+	TBranch *RhomBranch;					 // Branch for rhom
+	// Leaves for rho	
+	vector<double> *RhoetamaxVector;		// Vector for particle flow candidate pT
+	vector<double> *RhoetaminVector;		// Vector for particle flow candidate pT
+	vector<double> *RhoVector;		// Vector for particle flow candidate pT
+	vector<double> *RhomVector;		// Vector for particle flow candidate pT
+
+
 	// ========================================== //
 	// Read all the branches from the input trees //
 	// ========================================== //
@@ -314,6 +332,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTree->SetBranchAddress("lumi",&lumi,&lumiBranch);
 	heavyIonTree->SetBranchStatus("vz",1);
 	heavyIonTree->SetBranchAddress("vz",&vertexZ,&hiVzBranch);
+	heavyIonTree->SetBranchStatus("vx",1);
+	heavyIonTree->SetBranchAddress("vx",&vertexX,&hiVxBranch);
+	heavyIonTree->SetBranchStatus("vy",1);
+	heavyIonTree->SetBranchAddress("vy",&vertexY,&hiVyBranch);
 	heavyIonTree->SetBranchStatus("hiHFplus",1);
 	heavyIonTree->SetBranchAddress("hiHFplus",&hiHFplus,&hiHFplusBranch);
 	heavyIonTree->SetBranchStatus("hiHFminus",1);
@@ -386,6 +408,15 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	skimTree->SetBranchStatus("pVertexFilterCutVtx1",1);
 	skimTree->SetBranchAddress("pVertexFilterCutVtx1", &pVertexFilterCutVtx1Bit, &pVertexFilterCutVtx1Branch);
 
+	RhoTree->SetBranchStatus("*",0);
+	RhoTree->SetBranchStatus("etaMin",1);
+	RhoTree->SetBranchAddress("etaMin",&RhoetaminVector,&RhoetaminBranch);
+	RhoTree->SetBranchStatus("etaMax",1);
+	RhoTree->SetBranchAddress("etaMax",&RhoetamaxVector,&RhoetamaxBranch);
+	RhoTree->SetBranchStatus("rho",1);
+	RhoTree->SetBranchAddress("rho",&RhoVector,&RhoBranch);
+	RhoTree->SetBranchStatus("rhom",1);
+	RhoTree->SetBranchAddress("rhom",&RhomVector,&RhomBranch);
 
 	// Same branch names for all jet collections
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
@@ -535,6 +566,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("evt",&event,"evt/l");
 	heavyIonTreeOutput->Branch("lumi",&lumi,"lumi/i");
 	heavyIonTreeOutput->Branch("vz",&vertexZ,"vz/F");
+	heavyIonTreeOutput->Branch("vx",&vertexX,"vx/F");
+	heavyIonTreeOutput->Branch("vy",&vertexY,"vy/F");
 	heavyIonTreeOutput->Branch("hiHFplus",&hiHFplus,"hiHFplus/F");
 	heavyIonTreeOutput->Branch("hiHFminus",&hiHFminus,"hiHFminus/F");
 	heavyIonTreeOutput->Branch("hiHFplusEta4",&hiHFplusEta4,"hiHFplusEta4/F");
@@ -545,7 +578,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("hi_FRG_noNsel",&hi_FRG_noNsel,"hi_FRG_noNsel/F");
 	heavyIonTreeOutput->Branch("hi_BRG",&hi_BRG,"hi_BRG/F");
 	heavyIonTreeOutput->Branch("hi_BRG_noNsel",&hi_BRG_noNsel,"hi_BRG_noNsel/F");
-
+	
 	
 	// Event plane
 	TTree *checkFlatteningTreeOutput = new TTree("tree","");
@@ -694,6 +727,21 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		} // Branches only for MC
 
 	} // Jet type loop
+
+	// soft drop
+	Float_t Momjet_z0p1_b0p0_RawPtArrayOutput[nMaxJet];	// raw jet pT for all the jets in an event after SD
+	Float_t Momjet_z0p1_b0p0_PhiArrayOutput[nMaxJet];	// phi of all the jets in an event after SD
+	Float_t Momjet_z0p1_b0p0_EtaArrayOutput[nMaxJet];	// eta of all the jets in an event after SD
+	Float_t Momjet_z0p1_b0p0_MassArrayOutput[nMaxJet];	// jet mass for all the jets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_RawPtArrayOutput[nMaxJet];	// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_PhiArrayOutput[nMaxJet];	// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_EtaArrayOutput[nMaxJet];	// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_MassArrayOutput[nMaxJet];	// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_RawPtArrayOutput[nMaxJet];	// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_PhiArrayOutput[nMaxJet];	// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_EtaArrayOutput[nMaxJet];	// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_MassArrayOutput[nMaxJet];	// jet mass for all the subleading subjets in an event after SD
+
 	
 	// Copy the track trees to the output
 	TTree *trackTreeOutput = new TTree("trackTree","");
@@ -744,6 +792,12 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		genTrackTreeOutput->Branch("chg","vector<int>", &genTrackChargeVector);
 		genTrackTreeOutput->Branch("sube","vector<int>", &genTrackSubeventVector);
 	}
+	
+	TTree *RhoTreeOutput = new TTree("rhotree","");
+	RhoTreeOutput->Branch("etaMin","vector<double>", &RhoetaminVector);
+	RhoTreeOutput->Branch("etaMax","vector<double>", &RhoetamaxVector);
+	RhoTreeOutput->Branch("rho","vector<double>", &RhoVector);
+	RhoTreeOutput->Branch("rhom","vector<double>", &RhomVector);
 
 	// ========================================== //
 	//				Loop over all events 					//
@@ -769,6 +823,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		hltTree->GetEntry(iEvent);
 		skimTree->GetEntry(iEvent);
 		trackTree->GetEntry(iEvent);
+		RhoTree->GetEntry(iEvent);
 		if(is_MC) genTrackTree->GetEntry(iEvent);
 		particleFlowCandidateTree->GetEntry(iEvent);
 		checkFlatteningTree->GetEntry(iEvent);
@@ -790,6 +845,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 		hltTreeOutput->Fill();
 		skimTreeOutput->Fill();
+		RhoTreeOutput->Fill();
+		
 
 		//Event plane (just what we want EP from 2 to 6)
 		epang_HFm2 = (float) eventPlaneAngle[44];
@@ -1121,6 +1178,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		jetTreeOutput[iJetType]->Write();
 		gDirectory->cd("../");
 	} // Loop over jet types
+
+  	gDirectory->mkdir("hiFJRhoAnalyzer");
+  	gDirectory->cd("hiFJRhoAnalyzer");
+	RhoTreeOutput->Write();
+	gDirectory->cd("../");	
 
   	gDirectory->mkdir("ppTrack");
   	gDirectory->cd("ppTrack");
