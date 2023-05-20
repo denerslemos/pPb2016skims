@@ -42,7 +42,7 @@ environment = "X509_USER_PROXY=voms_proxy.txt"
 i=0
 for line in Lines:
     outtempfiles = open(inFiles+"_part"+str(i)+".txt", "w")
-    outtempfiles.write(line)
+    outtempfiles.write("root://osg-se.sprace.org.br/"+line)
     outtempfiles.close()
     temp = '''
 log        = cond/'''+subFiles+'''_part_'''+str(i)+'''.log
