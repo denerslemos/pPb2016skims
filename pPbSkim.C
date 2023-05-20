@@ -20,12 +20,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
 	float jetptmin = 15.0;
-	float jetetamin = 5.2;
+	float jetetamin = 5.3;
 
-	if(is_MC){
-		jetptmin = 0.0;
-		jetetamin = 10000.;
-	}
+	if(is_MC){jetptmin = 0.0; jetetamin=1000000.;}
 
 	TString outputFileName;
 	outputFileName = Form("%s",ouputfile.Data());
@@ -674,6 +671,105 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Int_t jetRefSubidArrayOutput[nJetTrees][nMaxJet] = {{0}};           // jet subid
 	Float_t jetRefMassArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level mass for a reconstructed jet
 
+	// soft drop
+	// zcut 0.1 and beta 0.0
+	Float_t Subjet1_z0p1_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.1 and beta 1.0
+	Float_t Subjet1_z0p1_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.1 and beta 2.0
+	Float_t Subjet1_z0p1_b2p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b2p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b2p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b2p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b2p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p1_b2p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b2p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b2p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b2p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p1_b2p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b2p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p1_b2p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.2 and beta 0.0
+	Float_t Subjet1_z0p2_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p2_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p2_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p2_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p2_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p2_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p2_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p2_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p2_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p2_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p2_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p2_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.4 and beta 0.0
+	Float_t Subjet1_z0p4_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p4_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p4_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p4_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p4_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p4_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p4_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p4_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p4_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p4_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p4_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p4_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.5 and beta 1.0
+	Float_t Subjet1_z0p5_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.5 and beta 1.5
+	Float_t Subjet1_z0p5_b1p5_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p5_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p5_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p5_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p5_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet1_z0p5_b1p5_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p5_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p5_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p5_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p5_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p5_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t Subjet2_z0p5_b1p5_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
 	Int_t nGenJetsOutput[nJetTrees];								 	// number of generator level jets in an event
 	Float_t genJetPtArrayOutput[nJetTrees][nMaxJet] = {{0}};			// pT of all the generator level jets in an event
 	Float_t genJetPhiArrayOutput[nJetTrees][nMaxJet] = {{0}};			// phi of all the generator level jets in an event
@@ -684,6 +780,106 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Int_t genJetMatchIndexArrayOutput[nJetTrees][nMaxJet] = {{0}};		// matched index of all the generator level jets in an event
 	Float_t genJetMassArrayOutput[nJetTrees][nMaxJet] = {{0}};			// jet mass for all the generator level jets in an event
 	Float_t genJetMassCalcArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass calculated for all the generator level jets in an event
+
+	// soft drop
+	// zcut 0.1 and beta 0.0
+	Float_t SubjetGen1_z0p1_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.1 and beta 1.0
+	Float_t SubjetGen1_z0p1_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};	// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.1 and beta 2.0
+	Float_t SubjetGen1_z0p1_b2p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b2p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b2p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b2p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b2p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p1_b2p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b2p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b2p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b2p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b2p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b2p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p1_b2p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.2 and beta 0.0
+	Float_t SubjetGen1_z0p2_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p2_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p2_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p2_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p2_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p2_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p2_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p2_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p2_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p2_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p2_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p2_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.4 and beta 0.0
+	Float_t SubjetGen1_z0p4_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p4_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p4_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p4_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p4_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p4_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p4_b0p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p4_b0p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p4_b0p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p4_b0p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p4_b0p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p4_b0p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.5 and beta 1.0
+	Float_t SubjetGen1_z0p5_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p0_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p0_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p0_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p0_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p0_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p0_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
+	// zcut 0.5 and beta 1.5
+	Float_t SubjetGen1_z0p5_b1p5_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p5_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p5_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p5_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p5_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen1_z0p5_b1p5_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p5_RawPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// raw jet pT for all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p5_PhiArrayOutput[nJetTrees][nMaxJet] = {{0}};		// phi of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p5_EtaArrayOutput[nJetTrees][nMaxJet] = {{0}};		// eta of all the subleading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p5_PhiWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA phi of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p5_EtaWTAArrayOutput[nJetTrees][nMaxJet] = {{0}};		// WTA eta of all the leading subjets in an event after SD
+	Float_t SubjetGen2_z0p5_b1p5_MassArrayOutput[nJetTrees][nMaxJet] = {{0}};		// jet mass for all the subleading subjets in an event after SD
+
 	
 	for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 		
@@ -700,6 +896,103 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		// Jet phi with E-scheme and WTA axes
 		jetTreeOutput[iJetType]->Branch("jteta",&jetEtaArrayOutput[iJetType],"jteta[nref]/F");
 		jetTreeOutput[iJetType]->Branch("WTAeta",&jetEtaArrayWTAOutput[iJetType],"WTAeta[nref]/F");
+		
+		
+		if(iJetType == 1 || iJetType == 2){ // for ak4PF and CSak4PF
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p1_b0p0",&Subjet2_z0p1_b0p0_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p1_b0p0",&Subjet2_z0p1_b0p0_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p1_b0p0",&Subjet2_z0p1_b0p0_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p1_b0p0",&Subjet2_z0p1_b0p0_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p1_b0p0",&Subjet2_z0p1_b0p0_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p1_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p1_b0p0",&Subjet2_z0p1_b0p0_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p1_b0p0[nref]/F");
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p1_b1p0",&Subjet1_z0p1_b1p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p1_b1p0",&Subjet1_z0p1_b1p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p1_b1p0",&Subjet1_z0p1_b1p0_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p1_b1p0",&Subjet1_z0p1_b1p0_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p1_b1p0",&Subjet1_z0p1_b1p0_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p1_b1p0",&Subjet1_z0p1_b1p0_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p1_b1p0",&Subjet2_z0p1_b1p0_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p1_b1p0",&Subjet2_z0p1_b1p0_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p1_b1p0",&Subjet2_z0p1_b1p0_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p1_b1p0",&Subjet2_z0p1_b1p0_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p1_b1p0",&Subjet2_z0p1_b1p0_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p1_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p1_b1p0",&Subjet2_z0p1_b1p0_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p1_b1p0[nref]/F");
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p1_b2p0",&Subjet1_z0p1_b2p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p1_b2p0",&Subjet1_z0p1_b2p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p1_b2p0",&Subjet1_z0p1_b2p0_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p1_b2p0",&Subjet1_z0p1_b2p0_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p1_b2p0",&Subjet1_z0p1_b2p0_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p1_b2p0",&Subjet1_z0p1_b2p0_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p1_b2p0",&Subjet2_z0p1_b2p0_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p1_b2p0",&Subjet2_z0p1_b2p0_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p1_b2p0",&Subjet2_z0p1_b2p0_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p1_b2p0",&Subjet2_z0p1_b2p0_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p1_b2p0",&Subjet2_z0p1_b2p0_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p1_b2p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p1_b2p0",&Subjet2_z0p1_b2p0_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p1_b2p0[nref]/F");
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p2_b0p0",&Subjet1_z0p2_b0p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p2_b0p0",&Subjet1_z0p2_b0p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p2_b0p0",&Subjet1_z0p2_b0p0_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p2_b0p0",&Subjet1_z0p2_b0p0_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p2_b0p0",&Subjet1_z0p2_b0p0_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p2_b0p0",&Subjet1_z0p2_b0p0_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p2_b0p0",&Subjet2_z0p2_b0p0_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p2_b0p0",&Subjet2_z0p2_b0p0_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p2_b0p0",&Subjet2_z0p2_b0p0_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p2_b0p0",&Subjet2_z0p2_b0p0_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p2_b0p0",&Subjet2_z0p2_b0p0_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p2_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p2_b0p0",&Subjet2_z0p2_b0p0_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p2_b0p0[nref]/F");
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p4_b0p0",&Subjet1_z0p4_b0p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p4_b0p0",&Subjet1_z0p4_b0p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p4_b0p0",&Subjet1_z0p4_b0p0_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p4_b0p0",&Subjet1_z0p4_b0p0_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p4_b0p0",&Subjet1_z0p4_b0p0_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p4_b0p0",&Subjet1_z0p4_b0p0_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p4_b0p0",&Subjet2_z0p4_b0p0_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p4_b0p0",&Subjet2_z0p4_b0p0_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p4_b0p0",&Subjet2_z0p4_b0p0_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p4_b0p0",&Subjet2_z0p4_b0p0_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p4_b0p0",&Subjet2_z0p4_b0p0_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p4_b0p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p4_b0p0",&Subjet2_z0p4_b0p0_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p4_b0p0[nref]/F");
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p5_b1p0",&Subjet1_z0p5_b1p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p5_b1p0",&Subjet1_z0p5_b1p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p5_b1p0",&Subjet1_z0p5_b1p0_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p5_b1p0",&Subjet1_z0p5_b1p0_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p5_b1p0",&Subjet1_z0p5_b1p0_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p5_b1p0",&Subjet1_z0p5_b1p0_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p5_b1p0",&Subjet2_z0p5_b1p0_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p5_b1p0",&Subjet2_z0p5_b1p0_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p5_b1p0",&Subjet2_z0p5_b1p0_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p5_b1p0",&Subjet2_z0p5_b1p0_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p5_b1p0",&Subjet2_z0p5_b1p0_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p5_b1p0[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p5_b1p0",&Subjet2_z0p5_b1p0_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p5_b1p0[nref]/F");
+
+			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p5_b1p5",&Subjet1_z0p5_b1p5_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p5_b1p5",&Subjet1_z0p5_b1p5_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phi_SD_z0p5_b1p5",&Subjet1_z0p5_b1p5_PhiArrayOutput[iJetType],"Subjet1_phi_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_etaWTA_SD_z0p5_b1p5",&Subjet1_z0p5_b1p5_EtaWTAArrayOutput[iJetType],"Subjet1_etaWTA_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_phiWTA_SD_z0p5_b1p5",&Subjet1_z0p5_b1p5_PhiWTAArrayOutput[iJetType],"Subjet1_phiWTA_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet1_mass_SD_z0p5_b1p5",&Subjet1_z0p5_b1p5_MassArrayOutput[iJetType],"Subjet1_mass_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_rawpt_SD_z0p5_b1p5",&Subjet2_z0p5_b1p5_RawPtArrayOutput[iJetType],"Subjet2_rawpt_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_eta_SD_z0p5_b1p5",&Subjet2_z0p5_b1p5_EtaArrayOutput[iJetType],"Subjet2_eta_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phi_SD_z0p5_b1p5",&Subjet2_z0p5_b1p5_PhiArrayOutput[iJetType],"Subjet2_phi_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_etaWTA_SD_z0p5_b1p5",&Subjet2_z0p5_b1p5_EtaWTAArrayOutput[iJetType],"Subjet2_etaWTA_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_phiWTA_SD_z0p5_b1p5",&Subjet2_z0p5_b1p5_PhiWTAArrayOutput[iJetType],"Subjet2_phiWTA_SD_z0p5_b1p5[nref]/F");
+			jetTreeOutput[iJetType]->Branch("Subjet2_mass_SD_z0p5_b1p5",&Subjet2_z0p5_b1p5_MassArrayOutput[iJetType],"Subjet2_mass_SD_z0p5_b1p5[nref]/F");
+		
+		}
+		
 		// If we are looking at Monte Carlo, connect the reference pT and parton arrays
 		if(is_MC){
 			jetTreeOutput[iJetType]->Branch("refpt",&jetRefPtArrayOutput[iJetType],"refpt[nref]/F");
@@ -724,23 +1017,103 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTreeOutput[iJetType]->Branch("genm",&genJetMassArrayOutput[iJetType],"genm[ngen]/F");
 			jetTreeOutput[iJetType]->Branch("genmcalc",&genJetMassCalcArrayOutput[iJetType],"genmcalc[ngen]/F");
 		
+			if(iJetType == 1 || iJetType == 2){
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_pt_SD_z0p1_b0p0",&SubjetGen2_z0p1_b0p0_RawPtArrayOutput[iJetType],"SubjetGen2_pt_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p1_b0p0",&SubjetGen2_z0p1_b0p0_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p1_b0p0",&SubjetGen2_z0p1_b0p0_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p1_b0p0",&SubjetGen2_z0p1_b0p0_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p1_b0p0",&SubjetGen2_z0p1_b0p0_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p1_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p1_b0p0",&SubjetGen2_z0p1_b0p0_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p1_b0p0[ngen]/F");
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p1_b1p0",&SubjetGen1_z0p1_b1p0_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p1_b1p0",&SubjetGen1_z0p1_b1p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p1_b1p0",&SubjetGen1_z0p1_b1p0_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p1_b1p0",&SubjetGen1_z0p1_b1p0_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p1_b1p0",&SubjetGen1_z0p1_b1p0_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p1_b1p0",&SubjetGen1_z0p1_b1p0_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_pt_SD_z0p1_b1p0",&SubjetGen2_z0p1_b1p0_RawPtArrayOutput[iJetType],"SubjetGen2_pt_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p1_b1p0",&SubjetGen2_z0p1_b1p0_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p1_b1p0",&SubjetGen2_z0p1_b1p0_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p1_b1p0",&SubjetGen2_z0p1_b1p0_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p1_b1p0",&SubjetGen2_z0p1_b1p0_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p1_b1p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p1_b1p0",&SubjetGen2_z0p1_b1p0_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p1_b1p0[ngen]/F");
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p1_b2p0",&SubjetGen1_z0p1_b2p0_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p1_b2p0",&SubjetGen1_z0p1_b2p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p1_b2p0",&SubjetGen1_z0p1_b2p0_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p1_b2p0",&SubjetGen1_z0p1_b2p0_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p1_b2p0",&SubjetGen1_z0p1_b2p0_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p1_b2p0",&SubjetGen1_z0p1_b2p0_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_pt_SD_z0p1_b2p0",&SubjetGen2_z0p1_b2p0_RawPtArrayOutput[iJetType],"SubjetGen2_pt_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p1_b2p0",&SubjetGen2_z0p1_b2p0_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p1_b2p0",&SubjetGen2_z0p1_b2p0_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p1_b2p0",&SubjetGen2_z0p1_b2p0_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p1_b2p0",&SubjetGen2_z0p1_b2p0_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p1_b2p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p1_b2p0",&SubjetGen2_z0p1_b2p0_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p1_b2p0[ngen]/F");
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p2_b0p0",&SubjetGen1_z0p2_b0p0_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p2_b0p0",&SubjetGen1_z0p2_b0p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p2_b0p0",&SubjetGen1_z0p2_b0p0_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p2_b0p0",&SubjetGen1_z0p2_b0p0_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p2_b0p0",&SubjetGen1_z0p2_b0p0_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p2_b0p0",&SubjetGen1_z0p2_b0p0_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_pt_SD_z0p2_b0p0",&SubjetGen2_z0p2_b0p0_RawPtArrayOutput[iJetType],"SubjetGen2_pt_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p2_b0p0",&SubjetGen2_z0p2_b0p0_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p2_b0p0",&SubjetGen2_z0p2_b0p0_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p2_b0p0",&SubjetGen2_z0p2_b0p0_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p2_b0p0",&SubjetGen2_z0p2_b0p0_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p2_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p2_b0p0",&SubjetGen2_z0p2_b0p0_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p2_b0p0[ngen]/F");
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p4_b0p0",&SubjetGen1_z0p4_b0p0_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p4_b0p0",&SubjetGen1_z0p4_b0p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p4_b0p0",&SubjetGen1_z0p4_b0p0_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p4_b0p0",&SubjetGen1_z0p4_b0p0_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p4_b0p0",&SubjetGen1_z0p4_b0p0_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p4_b0p0",&SubjetGen1_z0p4_b0p0_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_pt_SD_z0p4_b0p0",&SubjetGen2_z0p4_b0p0_RawPtArrayOutput[iJetType],"SubjetGen2_pt_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p4_b0p0",&SubjetGen2_z0p4_b0p0_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p4_b0p0",&SubjetGen2_z0p4_b0p0_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p4_b0p0",&SubjetGen2_z0p4_b0p0_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p4_b0p0",&SubjetGen2_z0p4_b0p0_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p4_b0p0[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p4_b0p0",&SubjetGen2_z0p4_b0p0_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p4_b0p0[ngen]/F");
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_rawpt_SD_z0p5_b1p0",&SubjetGen1_z0p5_b1p0_RawPtArrayOutput[iJetType],"SubjetGen1_rawpt_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p5_b1p0",&SubjetGen1_z0p5_b1p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p5_b1p0",&SubjetGen1_z0p5_b1p0_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p5_b1p0",&SubjetGen1_z0p5_b1p0_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p5_b1p0",&SubjetGen1_z0p5_b1p0_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p5_b1p0",&SubjetGen1_z0p5_b1p0_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_rawpt_SD_z0p5_b1p0",&SubjetGen2_z0p5_b1p0_RawPtArrayOutput[iJetType],"SubjetGen2_rawpt_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p5_b1p0",&SubjetGen2_z0p5_b1p0_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p5_b1p0",&SubjetGen2_z0p5_b1p0_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p5_b1p0",&SubjetGen2_z0p5_b1p0_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p5_b1p0",&SubjetGen2_z0p5_b1p0_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p5_b1p0[nref]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p5_b1p0",&SubjetGen2_z0p5_b1p0_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p5_b1p0[nref]/F");
+
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p5_b1p5",&SubjetGen1_z0p5_b1p5_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p5_b1p5",&SubjetGen1_z0p5_b1p5_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phi_SD_z0p5_b1p5",&SubjetGen1_z0p5_b1p5_PhiArrayOutput[iJetType],"SubjetGen1_phi_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_etaWTA_SD_z0p5_b1p5",&SubjetGen1_z0p5_b1p5_EtaWTAArrayOutput[iJetType],"SubjetGen1_etaWTA_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_phiWTA_SD_z0p5_b1p5",&SubjetGen1_z0p5_b1p5_PhiWTAArrayOutput[iJetType],"SubjetGen1_phiWTA_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen1_mass_SD_z0p5_b1p5",&SubjetGen1_z0p5_b1p5_MassArrayOutput[iJetType],"SubjetGen1_mass_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_pt_SD_z0p5_b1p5",&SubjetGen2_z0p5_b1p5_RawPtArrayOutput[iJetType],"SubjetGen2_pt_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_eta_SD_z0p5_b1p5",&SubjetGen2_z0p5_b1p5_EtaArrayOutput[iJetType],"SubjetGen2_eta_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phi_SD_z0p5_b1p5",&SubjetGen2_z0p5_b1p5_PhiArrayOutput[iJetType],"SubjetGen2_phi_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_etaWTA_SD_z0p5_b1p5",&SubjetGen2_z0p5_b1p5_EtaWTAArrayOutput[iJetType],"SubjetGen2_etaWTA_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_phiWTA_SD_z0p5_b1p5",&SubjetGen2_z0p5_b1p5_PhiWTAArrayOutput[iJetType],"SubjetGen2_phiWTA_SD_z0p5_b1p5[ngen]/F");
+				jetTreeOutput[iJetType]->Branch("SubjetGen2_mass_SD_z0p5_b1p5",&SubjetGen2_z0p5_b1p5_MassArrayOutput[iJetType],"SubjetGen2_mass_SD_z0p5_b1p5[ngen]/F");
+		
+			}
 		} // Branches only for MC
 
 	} // Jet type loop
-
-	// soft drop
-	Float_t Momjet_z0p1_b0p0_RawPtArrayOutput[nMaxJet];	// raw jet pT for all the jets in an event after SD
-	Float_t Momjet_z0p1_b0p0_PhiArrayOutput[nMaxJet];	// phi of all the jets in an event after SD
-	Float_t Momjet_z0p1_b0p0_EtaArrayOutput[nMaxJet];	// eta of all the jets in an event after SD
-	Float_t Momjet_z0p1_b0p0_MassArrayOutput[nMaxJet];	// jet mass for all the jets in an event after SD
-	Float_t Subjet1_z0p1_b0p0_RawPtArrayOutput[nMaxJet];	// raw jet pT for all the leading subjets in an event after SD
-	Float_t Subjet1_z0p1_b0p0_PhiArrayOutput[nMaxJet];	// phi of all the leading subjets in an event after SD
-	Float_t Subjet1_z0p1_b0p0_EtaArrayOutput[nMaxJet];	// eta of all the leading subjets in an event after SD
-	Float_t Subjet1_z0p1_b0p0_MassArrayOutput[nMaxJet];	// jet mass for all the leading subjets in an event after SD
-	Float_t Subjet2_z0p1_b0p0_RawPtArrayOutput[nMaxJet];	// raw jet pT for all the subleading subjets in an event after SD
-	Float_t Subjet2_z0p1_b0p0_PhiArrayOutput[nMaxJet];	// phi of all the subleading subjets in an event after SD
-	Float_t Subjet2_z0p1_b0p0_EtaArrayOutput[nMaxJet];	// eta of all the subleading subjets in an event after SD
-	Float_t Subjet2_z0p1_b0p0_MassArrayOutput[nMaxJet];	// jet mass for all the subleading subjets in an event after SD
 
 	
 	// Copy the track trees to the output
@@ -899,6 +1272,9 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 				vector<Node *> NodesWTAScheme;
 				NodesWTAScheme.clear();
 				
+				vector<Node *> NodesCAWTATree;
+				NodesCAWTATree.clear();				
+				
 				vector<Node *> NodesCATree;
 				NodesCATree.clear();
 
@@ -907,7 +1283,105 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 				Float_t jetPhiWTA = -999;
 				Float_t jetEtaWTA = -999;
 				Float_t jetmassC = -999;
+				
+				// zcut 0.1 and beta 0.0
+				Float_t SD_subjet1_pt_0p1_0p0 = -999;
+				Float_t SD_subjet1_eta_0p1_0p0 = -999;
+				Float_t SD_subjet1_phi_0p1_0p0 = -999;
+				Float_t SD_subjet1_etaWTA_0p1_0p0 = -999;
+				Float_t SD_subjet1_phiWTA_0p1_0p0 = -999;
+				Float_t SD_subjet1_mass_0p1_0p0 = -999;
+				Float_t SD_subjet2_pt_0p1_0p0 = -999;
+				Float_t SD_subjet2_eta_0p1_0p0 = -999;
+				Float_t SD_subjet2_phi_0p1_0p0 = -999;
+				Float_t SD_subjet2_etaWTA_0p1_0p0 = -999;
+				Float_t SD_subjet2_phiWTA_0p1_0p0 = -999;
+				Float_t SD_subjet2_mass_0p1_0p0 = -999;
 
+				// zcut 0.1 and beta 1.0
+				Float_t SD_subjet1_pt_0p1_1p0 = -999;
+				Float_t SD_subjet1_eta_0p1_1p0 = -999;
+				Float_t SD_subjet1_phi_0p1_1p0 = -999;
+				Float_t SD_subjet1_etaWTA_0p1_1p0 = -999;
+				Float_t SD_subjet1_phiWTA_0p1_1p0 = -999;
+				Float_t SD_subjet1_mass_0p1_1p0 = -999;
+				Float_t SD_subjet2_pt_0p1_1p0 = -999;
+				Float_t SD_subjet2_eta_0p1_1p0 = -999;
+				Float_t SD_subjet2_phi_0p1_1p0 = -999;
+				Float_t SD_subjet2_etaWTA_0p1_1p0 = -999;
+				Float_t SD_subjet2_phiWTA_0p1_1p0 = -999;
+				Float_t SD_subjet2_mass_0p1_1p0 = -999;
+
+				// zcut 0.1 and beta 2.0
+				Float_t SD_subjet1_pt_0p1_2p0 = -999;
+				Float_t SD_subjet1_eta_0p1_2p0 = -999;
+				Float_t SD_subjet1_phi_0p1_2p0 = -999;
+				Float_t SD_subjet1_etaWTA_0p1_2p0 = -999;
+				Float_t SD_subjet1_phiWTA_0p1_2p0 = -999;
+				Float_t SD_subjet1_mass_0p1_2p0 = -999;
+				Float_t SD_subjet2_pt_0p1_2p0 = -999;
+				Float_t SD_subjet2_eta_0p1_2p0 = -999;
+				Float_t SD_subjet2_phi_0p1_2p0 = -999;
+				Float_t SD_subjet2_etaWTA_0p1_2p0 = -999;
+				Float_t SD_subjet2_phiWTA_0p1_2p0 = -999;
+				Float_t SD_subjet2_mass_0p1_2p0 = -999;
+
+				// zcut 0.2 and beta 0.0
+				Float_t SD_subjet1_pt_0p2_0p0 = -999;
+				Float_t SD_subjet1_eta_0p2_0p0 = -999;
+				Float_t SD_subjet1_phi_0p2_0p0 = -999;
+				Float_t SD_subjet1_etaWTA_0p2_0p0 = -999;
+				Float_t SD_subjet1_phiWTA_0p2_0p0 = -999;
+				Float_t SD_subjet1_mass_0p2_0p0 = -999;
+				Float_t SD_subjet2_pt_0p2_0p0 = -999;
+				Float_t SD_subjet2_eta_0p2_0p0 = -999;
+				Float_t SD_subjet2_phi_0p2_0p0 = -999;
+				Float_t SD_subjet2_etaWTA_0p2_0p0 = -999;
+				Float_t SD_subjet2_phiWTA_0p2_0p0 = -999;
+				Float_t SD_subjet2_mass_0p2_0p0 = -999;
+				
+				// zcut 0.4 and beta 0.0
+				Float_t SD_subjet1_pt_0p4_0p0 = -999;
+				Float_t SD_subjet1_eta_0p4_0p0 = -999;
+				Float_t SD_subjet1_phi_0p4_0p0 = -999;
+				Float_t SD_subjet1_etaWTA_0p4_0p0 = -999;
+				Float_t SD_subjet1_phiWTA_0p4_0p0 = -999;
+				Float_t SD_subjet1_mass_0p4_0p0 = -999;
+				Float_t SD_subjet2_pt_0p4_0p0 = -999;
+				Float_t SD_subjet2_eta_0p4_0p0 = -999;
+				Float_t SD_subjet2_phi_0p4_0p0 = -999;
+				Float_t SD_subjet2_etaWTA_0p4_0p0 = -999;
+				Float_t SD_subjet2_phiWTA_0p4_0p0 = -999;
+				Float_t SD_subjet2_mass_0p4_0p0 = -999;
+				
+				// zcut 0.5 and beta 1.0
+				Float_t SD_subjet1_pt_0p5_1p0 = -999;
+				Float_t SD_subjet1_eta_0p5_1p0 = -999;
+				Float_t SD_subjet1_phi_0p5_1p0 = -999;
+				Float_t SD_subjet1_etaWTA_0p5_1p0 = -999;
+				Float_t SD_subjet1_phiWTA_0p5_1p0 = -999;
+				Float_t SD_subjet1_mass_0p5_1p0 = -999;
+				Float_t SD_subjet2_pt_0p5_1p0 = -999;
+				Float_t SD_subjet2_eta_0p5_1p0 = -999;
+				Float_t SD_subjet2_phi_0p5_1p0 = -999;
+				Float_t SD_subjet2_etaWTA_0p5_1p0 = -999;
+				Float_t SD_subjet2_phiWTA_0p5_1p0 = -999;
+				Float_t SD_subjet2_mass_0p5_1p0 = -999;
+
+				// zcut 0.5 and beta 1.5
+				Float_t SD_subjet1_pt_0p5_1p5 = -999;
+				Float_t SD_subjet1_eta_0p5_1p5 = -999;
+				Float_t SD_subjet1_phi_0p5_1p5 = -999;
+				Float_t SD_subjet1_etaWTA_0p5_1p5 = -999;
+				Float_t SD_subjet1_phiWTA_0p5_1p5 = -999;
+				Float_t SD_subjet1_mass_0p5_1p5 = -999;
+				Float_t SD_subjet2_pt_0p5_1p5 = -999;
+				Float_t SD_subjet2_eta_0p5_1p5 = -999;
+				Float_t SD_subjet2_phi_0p5_1p5 = -999;
+				Float_t SD_subjet2_etaWTA_0p5_1p5 = -999;
+				Float_t SD_subjet2_phiWTA_0p5_1p5 = -999;
+				Float_t SD_subjet2_mass_0p5_1p5 = -999;
+				
 				// recluster and find WTA axis
 				if( iJetType == 0){
 					for(int itrk = 0; itrk < nTracks; itrk++) {
@@ -922,6 +1396,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
       					P.SetPtEtaPhiMass(trackPtArray[itrk], trackEtaArray[itrk], trackPhiArray[itrk], pimass);
       					// Add into the node object vector
       					NodesWTAScheme.push_back(new Node(P));
+      					NodesCAWTATree.push_back(new Node(P));
       					NodesCATree.push_back(new Node(P));
 					}					
 				}else{
@@ -937,6 +1412,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
       					P.SetPtEtaPhiMass(particleFlowCandidatePtVector->at(pfi), particleFlowCandidateEtaVector->at(pfi), particleFlowCandidatePhiVector->at(pfi), particleFlowCandidateMassVector->at(pfi));
       					// Add into the node object vector
       					NodesWTAScheme.push_back(new Node(P));
+      					NodesCAWTATree.push_back(new Node(P));
       					NodesCATree.push_back(new Node(P));
    					}
 				}	
@@ -947,10 +1423,190 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   					jetPhiWTA = NodesWTAScheme[0]->P.GetPhi();
   					jetEtaWTA = NodesWTAScheme[0]->P.GetEta();
   					jetmassC = NodesWTAScheme[0]->P.GetMass();
-  					delete NodesWTAScheme[0];
-  					NodesWTAScheme.clear();
+	  				delete NodesWTAScheme[0];
+	  				NodesWTAScheme.clear();
 				}
 
+   				if(NodesCATree.size()>0 && (iJetType == 1 || iJetType == 2)){
+					std::pair<float, float> zcut_beta(0.1,0.0);
+  					BuildCATree(NodesCATree, 0, EScheme);	
+					Node *SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p1_0p0 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p1_0p0 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p1_0p0 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p1_0p0 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p1_0p0 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p1_0p0 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p1_0p0 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p1_0p0 =  Subjet2.GetMass();
+  					}
+  					zcut_beta = std::make_pair(0.1,1.0);
+					SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p1_1p0 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p1_1p0 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p1_1p0 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p1_1p0 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p1_1p0 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p1_1p0 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p1_1p0 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p1_1p0 =  Subjet2.GetMass();
+  					}
+  					zcut_beta = std::make_pair(0.1,2.0);
+					SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p1_2p0 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p1_2p0 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p1_2p0 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p1_2p0 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p1_2p0 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p1_2p0 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p1_2p0 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p1_2p0 =  Subjet2.GetMass();
+  					}
+  					zcut_beta = std::make_pair(0.2,0.0);
+					SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p2_0p0 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p2_0p0 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p2_0p0 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p2_0p0 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p2_0p0 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p2_0p0 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p2_0p0 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p2_0p0 =  Subjet2.GetMass();
+  					}
+  					zcut_beta = std::make_pair(0.4,0.0);
+					SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p4_0p0 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p4_0p0 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p4_0p0 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p4_0p0 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p4_0p0 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p4_0p0 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p4_0p0 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p4_0p0 =  Subjet2.GetMass();
+  					}
+  					zcut_beta = std::make_pair(0.5,1.0);
+					SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p5_1p0 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p5_1p0 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p5_1p0 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p5_1p0 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p5_1p0 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p5_1p0 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p5_1p0 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p5_1p0 =  Subjet2.GetMass();
+  					}
+  					zcut_beta = std::make_pair(0.5,1.5);
+					SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNode->N > 1){
+  						FourVector Subjet1 = SDNode->Child1->P;
+						FourVector Subjet2 = SDNode->Child2->P;
+      					SD_subjet1_pt_0p5_1p5 =  Subjet1.GetPT();
+      					SD_subjet1_eta_0p5_1p5 =  Subjet1.GetEta();
+      					SD_subjet1_phi_0p5_1p5 =  Subjet1.GetPhi();
+      					SD_subjet1_mass_0p5_1p5 =  Subjet1.GetMass();
+      					SD_subjet2_pt_0p5_1p5 =  Subjet2.GetPT();
+      					SD_subjet2_eta_0p5_1p5 =  Subjet2.GetEta();
+      					SD_subjet2_phi_0p5_1p5 =  Subjet2.GetPhi();
+      					SD_subjet2_mass_0p5_1p5 =  Subjet2.GetMass();
+  					}
+  					delete NodesCATree[0];
+  					NodesCATree.clear();
+  				}
+  				
+  				if(NodesCAWTATree.size()>0 && (iJetType == 1 || iJetType == 2)){
+					std::pair<float, float> zcut_beta(0.1,0.0);
+  				  	BuildCATree(NodesCAWTATree, 0, WTAScheme);
+					Node *SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p1_0p0 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p1_0p0 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p1_0p0 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p1_0p0 =  Subjet2.GetPhi();						
+  					}
+					zcut_beta = std::make_pair(0.1,1.0);
+					SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p1_1p0 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p1_1p0 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p1_1p0 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p1_1p0 =  Subjet2.GetPhi();						
+  					}
+					zcut_beta = std::make_pair(0.1,2.0);
+					SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p1_2p0 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p1_2p0 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p1_2p0 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p1_2p0 =  Subjet2.GetPhi();						
+  					}
+					zcut_beta = std::make_pair(0.2,0.0);
+					SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p2_0p0 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p2_0p0 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p2_0p0 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p2_0p0 =  Subjet2.GetPhi();						
+  					}
+					zcut_beta = std::make_pair(0.4,0.0);
+					SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p4_0p0 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p4_0p0 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p4_0p0 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p4_0p0 =  Subjet2.GetPhi();						
+  					}
+					zcut_beta = std::make_pair(0.5,1.0);
+					SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p5_1p0 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p5_1p0 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p5_1p0 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p5_1p0 =  Subjet2.GetPhi();						
+  					}
+					zcut_beta = std::make_pair(0.5,1.5);
+					SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
+  					if(SDNodeWTA->N > 1){
+  						FourVector Subjet1 = SDNodeWTA->Child1->P;
+						FourVector Subjet2 = SDNodeWTA->Child2->P;
+						SD_subjet1_etaWTA_0p5_1p5 =  Subjet1.GetEta();
+      					SD_subjet1_phiWTA_0p5_1p5 =  Subjet1.GetPhi();
+						SD_subjet2_etaWTA_0p5_1p5 =  Subjet2.GetEta();
+      					SD_subjet2_phiWTA_0p5_1p5 =  Subjet2.GetPhi();						
+  					}
+  					delete NodesCAWTATree[0];
+  					NodesCAWTATree.clear();
+  				}
+  				  				
 				// Apply very basic jet cuts
 				if(jetRawPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minumum pT cut of 30 GeV
 				if(fabs(jetEtaArray[iJetType][iJet]) > jetetamin && fabs(jetEtaWTA) > jetetamin) passJetCuts = false;    // Maximum eta cut of 2.1
@@ -965,6 +1621,98 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					jetMaxTrackPtArrayOutput[iJetType][iJetOutput] = jetMaxTrackPtArray[iJetType][iJet];
 					jetMassArrayOutput[iJetType][iJetOutput] = jetMassArray[iJetType][iJet];
 					jetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassC;
+					
+					Subjet1_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p1_0p0;
+					Subjet1_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p1_0p0;
+					Subjet1_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p1_0p0;
+					Subjet1_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p1_0p0;
+					Subjet1_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p1_0p0;
+					Subjet1_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p1_0p0;
+					Subjet2_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p1_0p0;
+					Subjet2_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p1_0p0;
+					Subjet2_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p1_0p0;
+					Subjet2_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p1_0p0;
+					Subjet2_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p1_0p0;
+					Subjet2_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p1_0p0;
+
+					Subjet1_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p1_1p0;
+					Subjet1_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p1_1p0;
+					Subjet1_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p1_1p0;
+					Subjet1_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p1_1p0;
+					Subjet1_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p1_1p0;
+					Subjet1_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p1_1p0;
+					Subjet2_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p1_1p0;
+					Subjet2_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p1_1p0;
+					Subjet2_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p1_1p0;
+					Subjet2_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p1_1p0;
+					Subjet2_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p1_1p0;
+					Subjet2_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p1_1p0;
+
+					Subjet1_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p1_2p0;
+					Subjet1_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p1_2p0;
+					Subjet1_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p1_2p0;
+					Subjet1_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p1_2p0;
+					Subjet1_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p1_2p0;
+					Subjet1_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p1_2p0;
+					Subjet2_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p1_2p0;
+					Subjet2_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p1_2p0;
+					Subjet2_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p1_2p0;
+					Subjet2_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p1_2p0;
+					Subjet2_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p1_2p0;
+					Subjet2_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p1_2p0;
+
+					Subjet1_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p2_0p0;
+					Subjet1_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p2_0p0;
+					Subjet1_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p2_0p0;
+					Subjet1_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p2_0p0;
+					Subjet1_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p2_0p0;
+					Subjet1_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p2_0p0;
+					Subjet2_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p2_0p0;
+					Subjet2_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p2_0p0;
+					Subjet2_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p2_0p0;
+					Subjet2_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p2_0p0;
+					Subjet2_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p2_0p0;
+					Subjet2_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p2_0p0;
+
+					Subjet1_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p4_0p0;
+					Subjet1_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p4_0p0;
+					Subjet1_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p4_0p0;
+					Subjet1_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p4_0p0;
+					Subjet1_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p4_0p0;
+					Subjet1_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p4_0p0;
+					Subjet2_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p4_0p0;
+					Subjet2_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p4_0p0;
+					Subjet2_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p4_0p0;
+					Subjet2_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p4_0p0;
+					Subjet2_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p4_0p0;
+					Subjet2_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p4_0p0;
+
+					Subjet1_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p5_1p0;
+					Subjet1_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p5_1p0;
+					Subjet1_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p5_1p0;
+					Subjet1_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p5_1p0;
+					Subjet1_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p5_1p0;
+					Subjet1_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p5_1p0;
+					Subjet2_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p5_1p0;
+					Subjet2_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p5_1p0;
+					Subjet2_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p5_1p0;
+					Subjet2_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p5_1p0;
+					Subjet2_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p5_1p0;
+					Subjet2_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p5_1p0;
+
+					Subjet1_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p5_1p5;
+					Subjet1_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p5_1p5;
+					Subjet1_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p5_1p5;
+					Subjet1_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_phiWTA_0p5_1p5;
+					Subjet1_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet1_etaWTA_0p5_1p5;
+					Subjet1_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjet1_mass_0p5_1p5;
+					Subjet2_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet2_pt_0p5_1p5;
+					Subjet2_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet2_phi_0p5_1p5;
+					Subjet2_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet2_eta_0p5_1p5;
+					Subjet2_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_phiWTA_0p5_1p5;
+					Subjet2_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjet2_etaWTA_0p5_1p5;
+					Subjet2_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjet2_mass_0p5_1p5;
+
 					if(is_MC){
 						jetRefPtArrayOutput[iJetType][iJetOutput] = jetRefPtArray[iJetType][iJet];
 						jetRefEtaArrayOutput[iJetType][iJetOutput] = jetRefEtaArray[iJetType][iJet];
@@ -974,6 +1722,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 						jetRefSubidArrayOutput[iJetType][iJetOutput] = jetRefSubidArray[iJetType][iJet];
 						jetRefMassArrayOutput[iJetType][iJetOutput] = jetRefMassArray[iJetType][iJet];						
 					}
+					
 					iJetOutput++;
 				} else {nJetsOutput[iJetType]--;}
 			} // Reconstructed jet loop
@@ -989,12 +1738,116 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 					vector<Node *> NodesWTASchemeGen;
 					NodesWTASchemeGen.clear();
+					
+					vector<Node *> NodesCAWTATreeGen;
+					NodesCAWTATreeGen.clear();				
+				
+					vector<Node *> NodesCATreeGen;
+					NodesCATreeGen.clear();
 
 					double jetRGen = 0.4;
 					if( iJetType == 3 ) jetRGen = 0.3;
 					Float_t jetPhiWTAGen = -999;
 					Float_t jetEtaWTAGen = -999;
 					Float_t jetmassCGen = -999;
+					
+					// zcut 0.1 and beta 0.0
+					Float_t SD_subjetgen1_pt_0p1_0p0 = -999;
+					Float_t SD_subjetgen1_eta_0p1_0p0 = -999;
+					Float_t SD_subjetgen1_phi_0p1_0p0 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p1_0p0 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p1_0p0 = -999;
+					Float_t SD_subjetgen1_mass_0p1_0p0 = -999;
+					Float_t SD_subjetgen2_pt_0p1_0p0 = -999;
+					Float_t SD_subjetgen2_eta_0p1_0p0 = -999;
+					Float_t SD_subjetgen2_phi_0p1_0p0 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p1_0p0 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p1_0p0 = -999;
+					Float_t SD_subjetgen2_mass_0p1_0p0 = -999;
+
+					// zcut 0.1 and beta 1.0
+					Float_t SD_subjetgen1_pt_0p1_1p0 = -999;
+					Float_t SD_subjetgen1_eta_0p1_1p0 = -999;
+					Float_t SD_subjetgen1_phi_0p1_1p0 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p1_1p0 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p1_1p0 = -999;
+					Float_t SD_subjetgen1_mass_0p1_1p0 = -999;
+					Float_t SD_subjetgen2_pt_0p1_1p0 = -999;
+					Float_t SD_subjetgen2_eta_0p1_1p0 = -999;
+					Float_t SD_subjetgen2_phi_0p1_1p0 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p1_1p0 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p1_1p0 = -999;
+					Float_t SD_subjetgen2_mass_0p1_1p0 = -999;
+
+					// zcut 0.1 and beta 2.0
+					Float_t SD_subjetgen1_pt_0p1_2p0 = -999;
+					Float_t SD_subjetgen1_eta_0p1_2p0 = -999;
+					Float_t SD_subjetgen1_phi_0p1_2p0 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p1_2p0 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p1_2p0 = -999;
+					Float_t SD_subjetgen1_mass_0p1_2p0 = -999;
+					Float_t SD_subjetgen2_pt_0p1_2p0 = -999;
+					Float_t SD_subjetgen2_eta_0p1_2p0 = -999;
+					Float_t SD_subjetgen2_phi_0p1_2p0 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p1_2p0 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p1_2p0 = -999;
+					Float_t SD_subjetgen2_mass_0p1_2p0 = -999;
+
+					// zcut 0.2 and beta 0.0
+					Float_t SD_subjetgen1_pt_0p2_0p0 = -999;
+					Float_t SD_subjetgen1_eta_0p2_0p0 = -999;
+					Float_t SD_subjetgen1_phi_0p2_0p0 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p2_0p0 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p2_0p0 = -999;
+					Float_t SD_subjetgen1_mass_0p2_0p0 = -999;
+					Float_t SD_subjetgen2_pt_0p2_0p0 = -999;
+					Float_t SD_subjetgen2_eta_0p2_0p0 = -999;
+					Float_t SD_subjetgen2_phi_0p2_0p0 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p2_0p0 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p2_0p0 = -999;
+					Float_t SD_subjetgen2_mass_0p2_0p0 = -999;
+				
+					// zcut 0.4 and beta 0.0
+					Float_t SD_subjetgen1_pt_0p4_0p0 = -999;
+					Float_t SD_subjetgen1_eta_0p4_0p0 = -999;
+					Float_t SD_subjetgen1_phi_0p4_0p0 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p4_0p0 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p4_0p0 = -999;
+					Float_t SD_subjetgen1_mass_0p4_0p0 = -999;
+					Float_t SD_subjetgen2_pt_0p4_0p0 = -999;
+					Float_t SD_subjetgen2_eta_0p4_0p0 = -999;
+					Float_t SD_subjetgen2_phi_0p4_0p0 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p4_0p0 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p4_0p0 = -999;
+					Float_t SD_subjetgen2_mass_0p4_0p0 = -999;
+				
+					// zcut 0.5 and beta 1.0
+					Float_t SD_subjetgen1_pt_0p5_1p0 = -999;
+					Float_t SD_subjetgen1_eta_0p5_1p0 = -999;
+					Float_t SD_subjetgen1_phi_0p5_1p0 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p5_1p0 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p5_1p0 = -999;
+					Float_t SD_subjetgen1_mass_0p5_1p0 = -999;
+					Float_t SD_subjetgen2_pt_0p5_1p0 = -999;
+					Float_t SD_subjetgen2_eta_0p5_1p0 = -999;
+					Float_t SD_subjetgen2_phi_0p5_1p0 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p5_1p0 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p5_1p0 = -999;
+					Float_t SD_subjetgen2_mass_0p5_1p0 = -999;
+
+					// zcut 0.5 and beta 1.5
+					Float_t SD_subjetgen1_pt_0p5_1p5 = -999;
+					Float_t SD_subjetgen1_eta_0p5_1p5 = -999;
+					Float_t SD_subjetgen1_phi_0p5_1p5 = -999;
+					Float_t SD_subjetgen1_etaWTA_0p5_1p5 = -999;
+					Float_t SD_subjetgen1_phiWTA_0p5_1p5 = -999;
+					Float_t SD_subjetgen1_mass_0p5_1p5 = -999;
+					Float_t SD_subjetgen2_pt_0p5_1p5 = -999;
+					Float_t SD_subjetgen2_eta_0p5_1p5 = -999;
+					Float_t SD_subjetgen2_phi_0p5_1p5 = -999;
+					Float_t SD_subjetgen2_etaWTA_0p5_1p5 = -999;
+					Float_t SD_subjetgen2_phiWTA_0p5_1p5 = -999;
+					Float_t SD_subjetgen2_mass_0p5_1p5 = -999;
 
 					for(int gpi = 0; gpi < genTrackPtArray->size(); gpi++) {
      					// Set particle kinematics
@@ -1008,6 +1861,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
       					P.SetPtEtaPhiMass(genTrackPtArray->at(gpi), genTrackEtaArray->at(gpi), genTrackPhiArray->at(gpi), genTrackMassArray->at(gpi));
       					// Add into the node object vector
       					NodesWTASchemeGen.push_back(new Node(P));
+      					NodesCAWTATreeGen.push_back(new Node(P));
+      					NodesCATreeGen.push_back(new Node(P));
    					}
 
    					// Do the reclustering!
@@ -1019,7 +1874,187 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   						delete NodesWTASchemeGen[0];
   						NodesWTASchemeGen.clear();
 					}
-
+					
+   					if(NodesCATreeGen.size()>0 && (iJetType == 1 || iJetType == 2)){
+						std::pair<float, float> zcut_beta(0.1,0.0);
+  						BuildCATree(NodesCATreeGen, 0, EScheme);	
+						Node *SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p1_0p0 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p1_0p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p1_0p0 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p1_0p0 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p1_0p0 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p1_0p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p1_0p0 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p1_0p0 =  Subjet2.GetMass();
+  						}
+  						zcut_beta = std::make_pair(0.1,1.0);
+						SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p1_1p0 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p1_1p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p1_1p0 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p1_1p0 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p1_1p0 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p1_1p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p1_1p0 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p1_1p0 =  Subjet2.GetMass();
+  						}
+  						zcut_beta = std::make_pair(0.1,2.0);
+						SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p1_2p0 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p1_2p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p1_2p0 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p1_2p0 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p1_2p0 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p1_2p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p1_2p0 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p1_2p0 =  Subjet2.GetMass();
+  						}
+  						zcut_beta = std::make_pair(0.2,0.0);
+						SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p2_0p0 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p2_0p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p2_0p0 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p2_0p0 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p2_0p0 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p2_0p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p2_0p0 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p2_0p0 =  Subjet2.GetMass();
+  						}
+  						zcut_beta = std::make_pair(0.4,0.0);
+						SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p4_0p0 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p4_0p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p4_0p0 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p4_0p0 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p4_0p0 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p4_0p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p4_0p0 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p4_0p0 =  Subjet2.GetMass();
+  						}
+  						zcut_beta = std::make_pair(0.5,1.0);
+						SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p5_1p0 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p5_1p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p5_1p0 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p5_1p0 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p5_1p0 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p5_1p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p5_1p0 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p5_1p0 =  Subjet2.GetMass();
+  						}
+  						zcut_beta = std::make_pair(0.5,1.5);
+						SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNode->N > 1){
+  							FourVector Subjet1 = SDNode->Child1->P;
+							FourVector Subjet2 = SDNode->Child2->P;
+      						SD_subjetgen1_pt_0p5_1p5 =  Subjet1.GetPT();
+      						SD_subjetgen1_eta_0p5_1p5 =  Subjet1.GetEta();
+      						SD_subjetgen1_phi_0p5_1p5 =  Subjet1.GetPhi();
+      						SD_subjetgen1_mass_0p5_1p5 =  Subjet1.GetMass();
+      						SD_subjetgen2_pt_0p5_1p5 =  Subjet2.GetPT();
+      						SD_subjetgen2_eta_0p5_1p5 =  Subjet2.GetEta();
+      						SD_subjetgen2_phi_0p5_1p5 =  Subjet2.GetPhi();
+      						SD_subjetgen2_mass_0p5_1p5 =  Subjet2.GetMass();
+  						}
+  						delete NodesCATreeGen[0];
+  						NodesCATreeGen.clear();
+  					}
+  				
+  					if(NodesCAWTATreeGen.size()>0 && (iJetType == 1 || iJetType == 2)){
+						std::pair<float, float> zcut_beta(0.1,0.0);
+  				  		BuildCATree(NodesCAWTATreeGen, 0, WTAScheme);
+						Node *SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p1_0p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phiWTA_0p1_0p0 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p1_0p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p1_0p0 =  Subjet2.GetPhi();						
+  						}
+						zcut_beta = std::make_pair(0.1,1.0);
+						SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p1_1p0 =  Subjet1.GetEta();
+   		   					SD_subjetgen1_phiWTA_0p1_1p0 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p1_1p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p1_1p0 =  Subjet2.GetPhi();						
+  						}
+						zcut_beta = std::make_pair(0.1,2.0);
+						SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p1_2p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phiWTA_0p1_2p0 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p1_2p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p1_2p0 =  Subjet2.GetPhi();						
+  						}
+						zcut_beta = std::make_pair(0.2,0.0);
+						SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p2_0p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phiWTA_0p2_0p0 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p2_0p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p2_0p0 =  Subjet2.GetPhi();						
+  						}
+						zcut_beta = std::make_pair(0.4,0.0);
+						SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p4_0p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phiWTA_0p4_0p0 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p4_0p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p4_0p0 =  Subjet2.GetPhi();						
+  						}
+						zcut_beta = std::make_pair(0.5,1.0);
+						SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p5_1p0 =  Subjet1.GetEta();
+      						SD_subjetgen1_phiWTA_0p5_1p0 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p5_1p0 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p5_1p0 =  Subjet2.GetPhi();						
+  						}
+						zcut_beta = std::make_pair(0.5,1.5);
+						SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
+  						if(SDNodeWTA->N > 1){
+  							FourVector Subjet1 = SDNodeWTA->Child1->P;
+							FourVector Subjet2 = SDNodeWTA->Child2->P;
+							SD_subjetgen1_etaWTA_0p5_1p5 =  Subjet1.GetEta();
+      						SD_subjetgen1_phiWTA_0p5_1p5 =  Subjet1.GetPhi();
+							SD_subjetgen2_etaWTA_0p5_1p5 =  Subjet2.GetEta();
+      						SD_subjetgen2_phiWTA_0p5_1p5 =  Subjet2.GetPhi();						
+  						}
+  						delete NodesCAWTATreeGen[0];
+  						NodesCAWTATreeGen.clear();
+  					}
+  	
 					// Apply very basic jet cuts
 					if(genJetPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minimum pT cut of 30 GeV
 					if(fabs(genJetEtaArray[iJetType][iJet]) > jetetamin && fabs(jetEtaWTAGen) > jetetamin) passJetCuts = false;    // Maximum eta cut of 2.1
@@ -1036,6 +2071,97 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					genJetMatchIndexArrayOutput[iJetType][iJetOutput] = genJetMatchIndexArray[iJetType][iJet];
 					genJetMassArrayOutput[iJetType][iJetOutput] = genJetMassArray[iJetType][iJet];
 					genJetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassCGen;
+					
+					SubjetGen1_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_0p0;
+					SubjetGen1_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_0p0;
+					SubjetGen1_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_0p0;
+					SubjetGen1_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_0p0;
+					SubjetGen1_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_0p0;
+					SubjetGen1_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_0p0;
+					SubjetGen2_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_0p0;
+					SubjetGen2_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_0p0;
+					SubjetGen2_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_0p0;
+					SubjetGen2_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_0p0;
+					SubjetGen2_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_0p0;
+					SubjetGen2_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_0p0;
+
+					SubjetGen1_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_1p0;
+					SubjetGen1_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_1p0;
+					SubjetGen1_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_1p0;
+					SubjetGen1_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_1p0;
+					SubjetGen1_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_1p0;
+					SubjetGen1_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_1p0;
+					SubjetGen2_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_1p0;
+					SubjetGen2_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_1p0;
+					SubjetGen2_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_1p0;
+					SubjetGen2_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_1p0;
+					SubjetGen2_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_1p0;
+					SubjetGen2_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_1p0;
+
+					SubjetGen1_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_2p0;
+					SubjetGen1_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_2p0;
+					SubjetGen1_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_2p0;
+					SubjetGen1_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_2p0;
+					SubjetGen1_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_2p0;
+					SubjetGen1_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_2p0;
+					SubjetGen2_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_2p0;
+					SubjetGen2_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_2p0;
+					SubjetGen2_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_2p0;
+					SubjetGen2_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_2p0;
+					SubjetGen2_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_2p0;
+					SubjetGen2_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_2p0;
+
+					SubjetGen1_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p2_0p0;
+					SubjetGen1_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p2_0p0;
+					SubjetGen1_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p2_0p0;
+					SubjetGen1_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p2_0p0;
+					SubjetGen1_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p2_0p0;
+					SubjetGen1_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p2_0p0;
+					SubjetGen2_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p2_0p0;
+					SubjetGen2_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p2_0p0;
+					SubjetGen2_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p2_0p0;
+					SubjetGen2_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p2_0p0;
+					SubjetGen2_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p2_0p0;
+					SubjetGen2_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p2_0p0;
+
+					SubjetGen1_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p4_0p0;
+					SubjetGen1_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p4_0p0;
+					SubjetGen1_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p4_0p0;
+					SubjetGen1_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p4_0p0;
+					SubjetGen1_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p4_0p0;
+					SubjetGen1_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p4_0p0;
+					SubjetGen2_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p4_0p0;
+					SubjetGen2_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p4_0p0;
+					SubjetGen2_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p4_0p0;
+					SubjetGen2_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p4_0p0;
+					SubjetGen2_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p4_0p0;
+					SubjetGen2_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p4_0p0;
+
+					SubjetGen1_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p5_1p0;
+					SubjetGen1_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p5_1p0;
+					SubjetGen1_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p5_1p0;
+					SubjetGen1_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p5_1p0;
+					SubjetGen1_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p5_1p0;
+					SubjetGen1_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p5_1p0;
+					SubjetGen2_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p5_1p0;
+					SubjetGen2_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p5_1p0;
+					SubjetGen2_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p5_1p0;
+					SubjetGen2_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p5_1p0;
+					SubjetGen2_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p5_1p0;
+					SubjetGen2_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p5_1p0;
+
+					SubjetGen1_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p5_1p5;
+					SubjetGen1_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p5_1p5;
+					SubjetGen1_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p5_1p5;
+					SubjetGen1_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p5_1p5;
+					SubjetGen1_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p5_1p5;
+					SubjetGen1_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p5_1p5;
+					SubjetGen2_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p5_1p5;
+					SubjetGen2_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p5_1p5;
+					SubjetGen2_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p5_1p5;
+					SubjetGen2_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p5_1p5;
+					SubjetGen2_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p5_1p5;
+					SubjetGen2_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p5_1p5;
 
 					iJetOutput++;
 
