@@ -13,7 +13,7 @@ cmsenv
 ```
 Inside of the src folder, download the code using
 ```
-git clone git@github.com:denerslemos/pPb2016skims.git
+git clone https://github.com/denerslemos/pPb2016skims.git
 cd pPb2016skims
 mkdir cond
 ```
