@@ -32,7 +32,7 @@ command_lines = '''universe   = vanilla
 getenv     = True
 executable = sub_skim.sh
 +JobFlavour           = "tomorrow"
-requirements = (OpSysAndVer =?= "CentOS7")
+requirements = ((OpSysAndVer =?= "AlmaLinux9") && (CERNEnvironment =?= "qa"))
 RequestCpus = 1
 transfer_input_files  = voms_proxy.txt
 environment = "X509_USER_PROXY=voms_proxy.txt"
