@@ -19,10 +19,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
-	float jetptmin = 15.0;
-	float jetetamin = 5.3;
+	float jetrawptmin = 15.0;
+	if(is_MC){jetrawptmin = 0.0;}
+	bool storesoftdrop = false;
+	bool storetracks = false;
 
-	if(is_MC){jetptmin = 0.0; jetetamin=1000000.;}
 
 	TString outputFileName;
 	outputFileName = Form("%s",ouputfile.Data());
@@ -898,7 +899,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		jetTreeOutput[iJetType]->Branch("WTAeta",&jetEtaArrayWTAOutput[iJetType],"WTAeta[nref]/F");
 		
 		
-		if(iJetType == 1 || iJetType == 2){ // for ak4PF and CSak4PF
+		if(storesoftdrop && (iJetType == 1 || iJetType == 2)){ // SoftDrop for ak4PF and akCs4PF
 
 			jetTreeOutput[iJetType]->Branch("Subjet1_rawpt_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_RawPtArrayOutput[iJetType],"Subjet1_rawpt_SD_z0p1_b0p0[nref]/F");
 			jetTreeOutput[iJetType]->Branch("Subjet1_eta_SD_z0p1_b0p0",&Subjet1_z0p1_b0p0_EtaArrayOutput[iJetType],"Subjet1_eta_SD_z0p1_b0p0[nref]/F");
@@ -1017,7 +1018,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			jetTreeOutput[iJetType]->Branch("genm",&genJetMassArrayOutput[iJetType],"genm[ngen]/F");
 			jetTreeOutput[iJetType]->Branch("genmcalc",&genJetMassCalcArrayOutput[iJetType],"genmcalc[ngen]/F");
 		
-			if(iJetType == 1 || iJetType == 2){
+			if(storesoftdrop && (iJetType == 1 || iJetType == 2)){
 
 				jetTreeOutput[iJetType]->Branch("SubjetGen1_pt_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_RawPtArrayOutput[iJetType],"SubjetGen1_pt_SD_z0p1_b0p0[ngen]/F");
 				jetTreeOutput[iJetType]->Branch("SubjetGen1_eta_SD_z0p1_b0p0",&SubjetGen1_z0p1_b0p0_EtaArrayOutput[iJetType],"SubjetGen1_eta_SD_z0p1_b0p0[ngen]/F");
@@ -1220,8 +1221,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		skimTreeOutput->Fill();
 		RhoTreeOutput->Fill();
 		
-
-		//Event plane (just what we want EP from 2 to 6)
+		//Event plane (just what we want EP from 2 to 4)
 		epang_HFm2 = (float) eventPlaneAngle[44];
 		epang_HFp2 = (float) eventPlaneAngle[45];
 		epang_HFm3 = (float) eventPlaneAngle[73];
@@ -1387,8 +1387,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					for(int itrk = 0; itrk < nTracks; itrk++) {
      					// Set particle kinematics
      					double deltaphi = jetPhiArray[iJetType][iJet] - trackPhiArray[itrk];
-     					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
-     					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
+     					if(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
+     					if(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - trackEtaArray[itrk];
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR >= jetR) continue;
@@ -1403,8 +1403,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					for(int pfi = 0; pfi < particleFlowCandidatePtVector->size(); pfi++) {
      					// Set particle kinematics
      					double deltaphi = jetPhiArray[iJetType][iJet] - particleFlowCandidatePhiVector->at(pfi);
-     					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
-     					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
+     					if(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
+     					if(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = jetEtaArray[iJetType][iJet] - particleFlowCandidateEtaVector->at(pfi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR >= jetR) continue;
@@ -1427,7 +1427,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	  				NodesWTAScheme.clear();
 				}
 
-   				if(NodesCATree.size()>0 && (iJetType == 1 || iJetType == 2)){
+   				if(NodesCATree.size()>0 && storesoftdrop && (iJetType == 1 || iJetType == 2)){
 					std::pair<float, float> zcut_beta(0.1,0.0);
   					BuildCATree(NodesCATree, 0, EScheme);	
 					Node *SDNode = FindSDNode(NodesCATree[0], zcut_beta.first, zcut_beta.second, jetR);
@@ -1531,7 +1531,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   					NodesCATree.clear();
   				}
   				
-  				if(NodesCAWTATree.size()>0 && (iJetType == 1 || iJetType == 2)){
+  				if(NodesCAWTATree.size()>0 && storesoftdrop && (iJetType == 1 || iJetType == 2)){
 					std::pair<float, float> zcut_beta(0.1,0.0);
   				  	BuildCATree(NodesCAWTATree, 0, WTAScheme);
 					Node *SDNodeWTA = FindSDNode(NodesCAWTATree[0], zcut_beta.first, zcut_beta.second, jetR);
@@ -1608,8 +1608,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   				}
   				  				
 				// Apply very basic jet cuts
-				if(jetRawPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minumum pT cut of 30 GeV
-				if(fabs(jetEtaArray[iJetType][iJet]) > jetetamin && fabs(jetEtaWTA) > jetetamin) passJetCuts = false;    // Maximum eta cut of 2.1
+				if(jetRawPtArray[iJetType][iJet] < jetrawptmin) passJetCuts = false;    // Minumum pT cut of 30 GeV
 			
 				// Fill the jet arrays with reconstructed jets
 				if(passJetCuts){
@@ -1852,8 +1851,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					for(int gpi = 0; gpi < genTrackPtArray->size(); gpi++) {
      					// Set particle kinematics
      					double deltaphi = genJetPhiArray[iJetType][iJet] - genTrackPhiArray->at(gpi);
-     					while(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
-     					while(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
+     					if(deltaphi > (TMath::Pi())){deltaphi += -2*TMath::Pi();}
+     					if(deltaphi < (-1.0*TMath::Pi())){deltaphi += 2*TMath::Pi();}
      					double deltaeta = genJetEtaArray[iJetType][iJet] - genTrackEtaArray->at(gpi);
      					double deltaR = sqrt(pow(deltaphi,2) + pow(deltaeta,2));
      					if(deltaR >= jetRGen) continue;
@@ -1875,7 +1874,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   						NodesWTASchemeGen.clear();
 					}
 					
-   					if(NodesCATreeGen.size()>0 && (iJetType == 1 || iJetType == 2)){
+   					if(NodesCATreeGen.size()>0 && storesoftdrop && (iJetType == 1 || iJetType == 2)){
 						std::pair<float, float> zcut_beta(0.1,0.0);
   						BuildCATree(NodesCATreeGen, 0, EScheme);	
 						Node *SDNode = FindSDNode(NodesCATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
@@ -1979,7 +1978,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   						NodesCATreeGen.clear();
   					}
   				
-  					if(NodesCAWTATreeGen.size()>0 && (iJetType == 1 || iJetType == 2)){
+  					if(NodesCAWTATreeGen.size()>0 && storesoftdrop && (iJetType == 1 || iJetType == 2)){
 						std::pair<float, float> zcut_beta(0.1,0.0);
   				  		BuildCATree(NodesCAWTATreeGen, 0, WTAScheme);
 						Node *SDNodeWTA = FindSDNode(NodesCAWTATreeGen[0], zcut_beta.first, zcut_beta.second, jetRGen);
@@ -2056,114 +2055,113 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
   					}
   	
 					// Apply very basic jet cuts
-					if(genJetPtArray[iJetType][iJet] < jetptmin) passJetCuts = false;    // Minimum pT cut of 30 GeV
-					if(fabs(genJetEtaArray[iJetType][iJet]) > jetetamin && fabs(jetEtaWTAGen) > jetetamin) passJetCuts = false;    // Maximum eta cut of 2.1
+					if(genJetPtArray[iJetType][iJet] < jetrawptmin) passJetCuts = false;    // Minimum pT cut of 30 GeV
 				
 					// Fill the jet arrays with generated jets
 					if(passJetCuts){
 				
-					genJetPtArrayOutput[iJetType][iJetOutput] = genJetPtArray[iJetType][iJet];
-					genJetPhiArrayOutput[iJetType][iJetOutput] = genJetPhiArray[iJetType][iJet];
-					genJetPhiArrayWTAOutput[iJetType][iJetOutput] = jetPhiWTAGen;
-					genJetEtaArrayOutput[iJetType][iJetOutput] = genJetEtaArray[iJetType][iJet];
-					genJetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTAGen;
-					genJetSubidArrayOutput[iJetType][iJetOutput] = genJetSubidArray[iJetType][iJet];
-					genJetMatchIndexArrayOutput[iJetType][iJetOutput] = genJetMatchIndexArray[iJetType][iJet];
-					genJetMassArrayOutput[iJetType][iJetOutput] = genJetMassArray[iJetType][iJet];
-					genJetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassCGen;
+						genJetPtArrayOutput[iJetType][iJetOutput] = genJetPtArray[iJetType][iJet];
+						genJetPhiArrayOutput[iJetType][iJetOutput] = genJetPhiArray[iJetType][iJet];
+						genJetPhiArrayWTAOutput[iJetType][iJetOutput] = jetPhiWTAGen;
+						genJetEtaArrayOutput[iJetType][iJetOutput] = genJetEtaArray[iJetType][iJet];
+						genJetEtaArrayWTAOutput[iJetType][iJetOutput] = jetEtaWTAGen;
+						genJetSubidArrayOutput[iJetType][iJetOutput] = genJetSubidArray[iJetType][iJet];
+						genJetMatchIndexArrayOutput[iJetType][iJetOutput] = genJetMatchIndexArray[iJetType][iJet];
+						genJetMassArrayOutput[iJetType][iJetOutput] = genJetMassArray[iJetType][iJet];
+						genJetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassCGen;
 					
-					SubjetGen1_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_0p0;
-					SubjetGen1_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_0p0;
-					SubjetGen1_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_0p0;
-					SubjetGen1_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_0p0;
-					SubjetGen1_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_0p0;
-					SubjetGen1_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_0p0;
-					SubjetGen2_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_0p0;
-					SubjetGen2_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_0p0;
-					SubjetGen2_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_0p0;
-					SubjetGen2_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_0p0;
-					SubjetGen2_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_0p0;
-					SubjetGen2_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_0p0;
+						SubjetGen1_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_0p0;
+						SubjetGen1_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_0p0;
+						SubjetGen1_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_0p0;
+						SubjetGen1_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_0p0;
+						SubjetGen1_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_0p0;
+						SubjetGen1_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_0p0;
+						SubjetGen2_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_0p0;
+						SubjetGen2_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_0p0;
+						SubjetGen2_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_0p0;
+						SubjetGen2_z0p1_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_0p0;
+						SubjetGen2_z0p1_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_0p0;
+						SubjetGen2_z0p1_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_0p0;
 
-					SubjetGen1_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_1p0;
-					SubjetGen1_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_1p0;
-					SubjetGen1_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_1p0;
-					SubjetGen1_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_1p0;
-					SubjetGen1_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_1p0;
-					SubjetGen1_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_1p0;
-					SubjetGen2_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_1p0;
-					SubjetGen2_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_1p0;
-					SubjetGen2_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_1p0;
-					SubjetGen2_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_1p0;
-					SubjetGen2_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_1p0;
-					SubjetGen2_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_1p0;
+						SubjetGen1_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_1p0;
+						SubjetGen1_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_1p0;
+						SubjetGen1_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_1p0;
+						SubjetGen1_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_1p0;
+						SubjetGen1_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_1p0;
+						SubjetGen1_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_1p0;
+						SubjetGen2_z0p1_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_1p0;
+						SubjetGen2_z0p1_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_1p0;
+						SubjetGen2_z0p1_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_1p0;
+						SubjetGen2_z0p1_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_1p0;
+						SubjetGen2_z0p1_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_1p0;
+						SubjetGen2_z0p1_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_1p0;
 
-					SubjetGen1_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_2p0;
-					SubjetGen1_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_2p0;
-					SubjetGen1_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_2p0;
-					SubjetGen1_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_2p0;
-					SubjetGen1_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_2p0;
-					SubjetGen1_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_2p0;
-					SubjetGen2_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_2p0;
-					SubjetGen2_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_2p0;
-					SubjetGen2_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_2p0;
-					SubjetGen2_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_2p0;
-					SubjetGen2_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_2p0;
-					SubjetGen2_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_2p0;
+						SubjetGen1_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p1_2p0;
+						SubjetGen1_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p1_2p0;
+						SubjetGen1_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p1_2p0;
+						SubjetGen1_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p1_2p0;
+						SubjetGen1_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p1_2p0;
+						SubjetGen1_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p1_2p0;
+						SubjetGen2_z0p1_b2p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p1_2p0;
+						SubjetGen2_z0p1_b2p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p1_2p0;
+						SubjetGen2_z0p1_b2p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p1_2p0;
+						SubjetGen2_z0p1_b2p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p1_2p0;
+						SubjetGen2_z0p1_b2p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p1_2p0;
+						SubjetGen2_z0p1_b2p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p1_2p0;
 
-					SubjetGen1_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p2_0p0;
-					SubjetGen1_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p2_0p0;
-					SubjetGen1_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p2_0p0;
-					SubjetGen1_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p2_0p0;
-					SubjetGen1_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p2_0p0;
-					SubjetGen1_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p2_0p0;
-					SubjetGen2_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p2_0p0;
-					SubjetGen2_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p2_0p0;
-					SubjetGen2_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p2_0p0;
-					SubjetGen2_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p2_0p0;
-					SubjetGen2_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p2_0p0;
-					SubjetGen2_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p2_0p0;
+						SubjetGen1_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p2_0p0;
+						SubjetGen1_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p2_0p0;
+						SubjetGen1_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p2_0p0;
+						SubjetGen1_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p2_0p0;
+						SubjetGen1_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p2_0p0;
+						SubjetGen1_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p2_0p0;
+						SubjetGen2_z0p2_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p2_0p0;
+						SubjetGen2_z0p2_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p2_0p0;
+						SubjetGen2_z0p2_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p2_0p0;
+						SubjetGen2_z0p2_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p2_0p0;
+						SubjetGen2_z0p2_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p2_0p0;
+						SubjetGen2_z0p2_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p2_0p0;
 
-					SubjetGen1_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p4_0p0;
-					SubjetGen1_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p4_0p0;
-					SubjetGen1_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p4_0p0;
-					SubjetGen1_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p4_0p0;
-					SubjetGen1_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p4_0p0;
-					SubjetGen1_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p4_0p0;
-					SubjetGen2_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p4_0p0;
-					SubjetGen2_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p4_0p0;
-					SubjetGen2_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p4_0p0;
-					SubjetGen2_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p4_0p0;
-					SubjetGen2_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p4_0p0;
-					SubjetGen2_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p4_0p0;
+						SubjetGen1_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p4_0p0;
+						SubjetGen1_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p4_0p0;
+						SubjetGen1_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p4_0p0;
+						SubjetGen1_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p4_0p0;
+						SubjetGen1_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p4_0p0;
+						SubjetGen1_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p4_0p0;
+						SubjetGen2_z0p4_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p4_0p0;
+						SubjetGen2_z0p4_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p4_0p0;
+						SubjetGen2_z0p4_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p4_0p0;
+						SubjetGen2_z0p4_b0p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p4_0p0;
+						SubjetGen2_z0p4_b0p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p4_0p0;
+						SubjetGen2_z0p4_b0p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p4_0p0;
 
-					SubjetGen1_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p5_1p0;
-					SubjetGen1_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p5_1p0;
-					SubjetGen1_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p5_1p0;
-					SubjetGen1_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p5_1p0;
-					SubjetGen1_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p5_1p0;
-					SubjetGen1_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p5_1p0;
-					SubjetGen2_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p5_1p0;
-					SubjetGen2_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p5_1p0;
-					SubjetGen2_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p5_1p0;
-					SubjetGen2_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p5_1p0;
-					SubjetGen2_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p5_1p0;
-					SubjetGen2_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p5_1p0;
+						SubjetGen1_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p5_1p0;
+						SubjetGen1_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p5_1p0;
+						SubjetGen1_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p5_1p0;
+						SubjetGen1_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p5_1p0;
+						SubjetGen1_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p5_1p0;
+						SubjetGen1_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p5_1p0;
+						SubjetGen2_z0p5_b1p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p5_1p0;
+						SubjetGen2_z0p5_b1p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p5_1p0;
+						SubjetGen2_z0p5_b1p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p5_1p0;
+						SubjetGen2_z0p5_b1p0_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p5_1p0;
+						SubjetGen2_z0p5_b1p0_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p5_1p0;
+						SubjetGen2_z0p5_b1p0_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p5_1p0;
 
-					SubjetGen1_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p5_1p5;
-					SubjetGen1_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p5_1p5;
-					SubjetGen1_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p5_1p5;
-					SubjetGen1_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p5_1p5;
-					SubjetGen1_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p5_1p5;
-					SubjetGen1_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p5_1p5;
-					SubjetGen2_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p5_1p5;
-					SubjetGen2_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p5_1p5;
-					SubjetGen2_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p5_1p5;
-					SubjetGen2_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p5_1p5;
-					SubjetGen2_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p5_1p5;
-					SubjetGen2_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p5_1p5;
+						SubjetGen1_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_pt_0p5_1p5;
+						SubjetGen1_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phi_0p5_1p5;
+						SubjetGen1_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_eta_0p5_1p5;
+						SubjetGen1_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_phiWTA_0p5_1p5;
+						SubjetGen1_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_etaWTA_0p5_1p5;
+						SubjetGen1_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen1_mass_0p5_1p5;
+						SubjetGen2_z0p5_b1p5_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_pt_0p5_1p5;
+						SubjetGen2_z0p5_b1p5_PhiArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phi_0p5_1p5;
+						SubjetGen2_z0p5_b1p5_EtaArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_eta_0p5_1p5;
+						SubjetGen2_z0p5_b1p5_PhiWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_phiWTA_0p5_1p5;
+						SubjetGen2_z0p5_b1p5_EtaWTAArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_etaWTA_0p5_1p5;
+						SubjetGen2_z0p5_b1p5_MassArrayOutput[iJetType][iJetOutput] = SD_subjetgen2_mass_0p5_1p5;
 
-					iJetOutput++;
+						iJetOutput++;
 
 					} else {nGenJetsOutput[iJetType]--;}
 					} // Generator level jet loop
@@ -2268,7 +2266,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		hi_BRG = BRG;
 		hi_FRG_noNsel = BRG_noNsel;
 
-		heavyIonTreeOutput->Fill();
+		if(storetracks) heavyIonTreeOutput->Fill();
 
 
 	} // End loop over events
@@ -2310,17 +2308,19 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	RhoTreeOutput->Write();
 	gDirectory->cd("../");	
 
-  	gDirectory->mkdir("ppTrack");
-  	gDirectory->cd("ppTrack");
-	trackTreeOutput->Write();
-	gDirectory->cd("../");
-
-	// Generator particles only present in MC
-	if(is_MC){
-		gDirectory->mkdir("HiGenParticleAna");
-		gDirectory->cd("HiGenParticleAna");
-		genTrackTreeOutput->Write();
+  	if(storetracks) {
+  		gDirectory->mkdir("ppTrack");
+  		gDirectory->cd("ppTrack");
+		trackTreeOutput->Write();
 		gDirectory->cd("../");
+	
+		// Generator particles only present in MC
+		if(is_MC){
+			gDirectory->mkdir("HiGenParticleAna");
+			gDirectory->cd("HiGenParticleAna");
+			genTrackTreeOutput->Write();
+			gDirectory->cd("../");
+		}
 	}
 
 	outputFile->Close();
