@@ -22,7 +22,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	float jetrawptmin = 15.0;
 	if(is_MC){jetrawptmin = 0.0;}
 	bool storesoftdrop = false;
-	bool storetracks = false;
+	bool storetracks = true;
 
 
 	TString outputFileName;
@@ -2266,7 +2266,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		hi_BRG = BRG;
 		hi_FRG_noNsel = BRG_noNsel;
 
-		if(storetracks) heavyIonTreeOutput->Fill();
+		heavyIonTreeOutput->Fill();
 
 
 	} // End loop over events
