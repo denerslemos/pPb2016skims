@@ -191,6 +191,16 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *jetEtaBranch[nJetTrees];				// Branch for jet eta
 	TBranch *jetEtaBranchWTA[nJetTrees];			// Branch for jet eta with WTA axis
 	TBranch *jetMassBranch[nJetTrees];				// Branch for jet mass
+	TBranch *jetPfNHFBranch[nJetTrees];				// Branch for PF neutral hadron energy fraction in jets in an event
+	TBranch *jetPfNEFBranch[nJetTrees];				// Branch for PF neutral EM energy fraction in jets in an event
+	TBranch *jetPfCHFBranch[nJetTrees];				// Branch for PF charged hadron energy fraction in jets in an event
+	TBranch *jetPfMUFBranch[nJetTrees];				// Branch for PF muon energy fraction in jets in an event
+	TBranch *jetPfCEFBranch[nJetTrees];				// Branch for PF charged EM energy fraction in jets in an event
+	TBranch *jetPfCHMBranch[nJetTrees];				// Branch for PF charged hadron multiplicity in jets in an event
+	TBranch *jetPfCEMBranch[nJetTrees];				// Branch for PF charged EM multiplicity in jets in an event
+	TBranch *jetPfNHMBranch[nJetTrees];				// Branch for PF neutral hadron multiplicity in jets in an event
+	TBranch *jetPfNEMBranch[nJetTrees];				// Branch for PF neutral EM multiplicity in jets in an event
+	TBranch *jetPfMUMBranch[nJetTrees];				// Branch for PF muon multiplicity in jets in an event
 
 	TBranch *jetRefPtBranch[nJetTrees];				// Branch for reference generator level pT for a reconstructed jet
 	TBranch *jetRefEtaBranch[nJetTrees];			// Branch for reference generator level eta for a reconstructed jet
@@ -219,6 +229,16 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t jetEtaArray[nJetTrees][nMaxJet] = {{0}};		// eta of all the jets in an event
 	Float_t jetEtaArrayWTA[nJetTrees][nMaxJet] = {{0}};		// eta of all the jets in an event	with WTA axis
 	Float_t jetMassArray[nJetTrees][nMaxJet] = {{0}};		// Mass of all the jets in an event
+	Float_t jetPfNHFArray[nJetTrees][nMaxJet] = {{0}};		// PF neutral hadron energy fraction in jets in an event
+	Float_t jetPfNEFArray[nJetTrees][nMaxJet] = {{0}};		// PF neutral EM energy fraction in jets in an event
+	Float_t jetPfCHFArray[nJetTrees][nMaxJet] = {{0}};		// PF charged hadron energy fraction in jets in an event
+	Float_t jetPfMUFArray[nJetTrees][nMaxJet] = {{0}};		// PF muon energy fraction in jets in an event
+	Float_t jetPfCEFArray[nJetTrees][nMaxJet] = {{0}};		// PF charged EM energy fraction in jets in an event
+	Int_t jetPfCHMArray[nJetTrees][nMaxJet] = {{0}};		// PF charged hadron multiplicity in jets in an event
+	Int_t jetPfCEMArray[nJetTrees][nMaxJet] = {{0}};		// PF charged EM multiplicity in jets in an event
+	Int_t jetPfNHMArray[nJetTrees][nMaxJet] = {{0}};		// PF neutral hadron multiplicity in jets in an event
+	Int_t jetPfNEMArray[nJetTrees][nMaxJet] = {{0}};		// PF neutral EM multiplicity in jets in an event
+	Int_t jetPfMUMArray[nJetTrees][nMaxJet] = {{0}};		// PF muon multiplicity in jets in an event
 
 	Float_t jetRefPtArray[nJetTrees][nMaxJet] = {{0}};		// reference generator level pT for a reconstructed jet
 	Float_t jetRefEtaArray[nJetTrees][nMaxJet] = {{0}};		// reference generator level pT for a reconstructed jet
@@ -428,19 +448,41 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		jetTree[iJetType]->SetBranchAddress("rawpt",&jetRawPtArray[iJetType],&jetRawPtBranch[iJetType]);
 		jetTree[iJetType]->SetBranchStatus("trackMax",1);
 		jetTree[iJetType]->SetBranchAddress("trackMax",&jetMaxTrackPtArray[iJetType],&jetMaxTrackPtBranch[iJetType]);
-		
-		// Jet phi with E-scheme, WTA axes calculated later
+
+		// Jet phi with E-scheme, WTA axes are calculated later
 		jetTree[iJetType]->SetBranchStatus("jtphi",1);
 		jetTree[iJetType]->SetBranchAddress("jtphi",&jetPhiArray[iJetType],&jetPhiBranch[iJetType]);
 		
-		// Jet eta with E-scheme, WTA axes calculated later
+		// Jet eta with E-scheme, WTA axes are calculated later
 		jetTree[iJetType]->SetBranchStatus("jteta",1);
 		jetTree[iJetType]->SetBranchAddress("jteta",&jetEtaArray[iJetType],&jetEtaBranch[iJetType]);
 		
-		// jet mass
+		// Jet mass
 		jetTree[iJetType]->SetBranchStatus("jtm",1);
 		jetTree[iJetType]->SetBranchAddress("jtm",&jetMassArray[iJetType],&jetMassBranch[iJetType]);	
-	
+
+		// Jet ID stuff
+		jetTree[iJetType]->SetBranchStatus("jtPfNHF",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfNHF",&jetPfNHFArray[iJetType],&jetPfNHFBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfNEF",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfNEF",&jetPfNEFArray[iJetType],&jetPfNEFBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfCHF",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfCHF",&jetPfCHFArray[iJetType],&jetPfCHFBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfMUF",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfMUF",&jetPfMUFArray[iJetType],&jetPfMUFBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfCEF",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfCEF",&jetPfCEFArray[iJetType],&jetPfCEFBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfCHM",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfCHM",&jetPfCHMArray[iJetType],&jetPfCHMBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfCEM",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfCEM",&jetPfCEMArray[iJetType],&jetPfCEMBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfNHM",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfNHM",&jetPfNHMArray[iJetType],&jetPfNHMBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfNEM",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfNEM",&jetPfNEMArray[iJetType],&jetPfNEMBranch[iJetType]);	
+		jetTree[iJetType]->SetBranchStatus("jtPfMUM",1);
+		jetTree[iJetType]->SetBranchAddress("jtPfMUM",&jetPfMUMArray[iJetType],&jetPfMUMBranch[iJetType]);	
+
 		// If we are looking at Monte Carlo, connect the reference pT and parton arrays
 		if(is_MC){
 			// Matched jet variables
@@ -663,6 +705,17 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t jetMaxTrackPtArrayOutput[nJetTrees][nMaxJet] = {{0}};		// maximum track pT inside a jet for all the jets in an event
 	Float_t jetMassArrayOutput[nJetTrees][nMaxJet] = {{0}};				// jet mass for all the jets in an event
 	Float_t jetMassCalcArrayOutput[nJetTrees][nMaxJet] = {{0}};			// jet mass calculated for all the jets in an event
+
+	Float_t jetPfNHFArrayOutput[nJetTrees][nMaxJet] = {{0}};		// PF neutral hadron energy fraction in jets in an event
+	Float_t jetPfNEFArrayOutput[nJetTrees][nMaxJet] = {{0}};		// PF neutral EM energy fraction in jets in an event
+	Float_t jetPfCHFArrayOutput[nJetTrees][nMaxJet] = {{0}};		// PF charged hadron energy fraction in jets in an event
+	Float_t jetPfMUFArrayOutput[nJetTrees][nMaxJet] = {{0}};		// PF muon energy fraction in jets in an event
+	Float_t jetPfCEFArrayOutput[nJetTrees][nMaxJet] = {{0}};		// PF charged EM energy fraction in jets in an event
+	Int_t jetPfCHMArrayOutput[nJetTrees][nMaxJet] = {{0}};			// PF charged hadron multiplicity in jets in an event
+	Int_t jetPfCEMArrayOutput[nJetTrees][nMaxJet] = {{0}};			// PF charged EM multiplicity in jets in an event
+	Int_t jetPfNHMArrayOutput[nJetTrees][nMaxJet] = {{0}};			// PF neutral hadron multiplicity in jets in an event
+	Int_t jetPfNEMArrayOutput[nJetTrees][nMaxJet] = {{0}};			// PF neutral EM multiplicity in jets in an event
+	Int_t jetPfMUMArrayOutput[nJetTrees][nMaxJet] = {{0}};			// PF muon multiplicity in jets in an event
 
 	Float_t jetRefPtArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level pT for a reconstructed jet
 	Float_t jetRefEtaArrayOutput[nJetTrees][nMaxJet] = {{0}};			// reference generator level eta for a reconstructed jet
@@ -897,6 +950,18 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		// Jet phi with E-scheme and WTA axes
 		jetTreeOutput[iJetType]->Branch("jteta",&jetEtaArrayOutput[iJetType],"jteta[nref]/F");
 		jetTreeOutput[iJetType]->Branch("WTAeta",&jetEtaArrayWTAOutput[iJetType],"WTAeta[nref]/F");
+		
+		// Jet ID stuff
+		jetTreeOutput[iJetType]->Branch("jtPfNHF",&jetPfNHFArrayOutput[iJetType],"jtPfNHF[nref]/F");	
+		jetTreeOutput[iJetType]->Branch("jtPfNEF",&jetPfNEFArrayOutput[iJetType],"jtPfNEF[nref]/F");	
+		jetTreeOutput[iJetType]->Branch("jtPfCHF",&jetPfCHFArrayOutput[iJetType],"jtPfCHF[nref]/F");	
+		jetTreeOutput[iJetType]->Branch("jtPfMUF",&jetPfMUFArrayOutput[iJetType],"jtPfMUF[nref]/F");	
+		jetTreeOutput[iJetType]->Branch("jtPfCEF",&jetPfCEFArrayOutput[iJetType],"jtPfCEF[nref]/F");	
+		jetTreeOutput[iJetType]->Branch("jtPfCHM",&jetPfCHMArrayOutput[iJetType],"jtPfCHM[nref]/I");	
+		jetTreeOutput[iJetType]->Branch("jtPfCEM",&jetPfCEMArrayOutput[iJetType],"jtPfCEM[nref]/I");	
+		jetTreeOutput[iJetType]->Branch("jtPfNHM",&jetPfNHMArrayOutput[iJetType],"jtPfNHM[nref]/I");	
+		jetTreeOutput[iJetType]->Branch("jtPfNEM",&jetPfNEMArrayOutput[iJetType],"jtPfNEM[nref]/I");	
+		jetTreeOutput[iJetType]->Branch("jtPfMUM",&jetPfMUMArrayOutput[iJetType],"jtPfMUM[nref]/I");
 		
 		
 		if(storesoftdrop && (iJetType == 1 || iJetType == 2)){ // SoftDrop for ak4PF and akCs4PF
@@ -1621,6 +1686,18 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 					jetMassArrayOutput[iJetType][iJetOutput] = jetMassArray[iJetType][iJet];
 					jetMassCalcArrayOutput[iJetType][iJetOutput] = jetmassC;
 					
+					jetPfNHFArrayOutput[iJetType][iJetOutput] = jetPfNHFArray[iJetType][iJet];
+					jetPfNEFArrayOutput[iJetType][iJetOutput] = jetPfNEFArray[iJetType][iJet];
+					jetPfCHFArrayOutput[iJetType][iJetOutput] = jetPfCHFArray[iJetType][iJet];
+					jetPfMUFArrayOutput[iJetType][iJetOutput] = jetPfMUFArray[iJetType][iJet];
+					jetPfCEFArrayOutput[iJetType][iJetOutput] = jetPfCEFArray[iJetType][iJet];
+					jetPfCHMArrayOutput[iJetType][iJetOutput] = jetPfCHMArray[iJetType][iJet];
+					jetPfCEMArrayOutput[iJetType][iJetOutput] = jetPfCEMArray[iJetType][iJet];
+					jetPfNHMArrayOutput[iJetType][iJetOutput] = jetPfNHMArray[iJetType][iJet];	
+					jetPfNEMArrayOutput[iJetType][iJetOutput] = jetPfNEMArray[iJetType][iJet];
+					jetPfMUMArrayOutput[iJetType][iJetOutput] = jetPfMUMArray[iJetType][iJet];				
+					
+					
 					Subjet1_z0p1_b0p0_RawPtArrayOutput[iJetType][iJetOutput] = SD_subjet1_pt_0p1_0p0;
 					Subjet1_z0p1_b0p0_PhiArrayOutput[iJetType][iJetOutput] = SD_subjet1_phi_0p1_0p0;
 					Subjet1_z0p1_b0p0_EtaArrayOutput[iJetType][iJetOutput] = SD_subjet1_eta_0p1_0p0;
@@ -2164,7 +2241,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 						iJetOutput++;
 
 					} else {nGenJetsOutput[iJetType]--;}
-					} // Generator level jet loop
+				} // Generator level jet loop
 			} // If for filling generator jet loop
 			jetTreeOutput[iJetType]->Fill();
     	} // Loop over jet collections
