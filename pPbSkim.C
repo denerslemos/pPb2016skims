@@ -114,6 +114,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	Float_t hiHFminus;			 // transverse energy sum of HF- tower;
 	Float_t hiHFplusEta4;		 // transverse energy sum of HF+ tower for |eta| > 4;
 	Float_t hiHFminusEta4;		 // transverse energy sum of HF- tower for |eta| > 4;
+	Int_t Ntroff;		 		 // Multiplicity --> Ntrkoffline
 
 	Float_t hiZDCplus;			 // energy deposit in ZDC+;
 	Float_t hiZDCminus;			 // energy deposit in ZDC-;
@@ -633,6 +634,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	heavyIonTreeOutput->Branch("hiHFminus",&hiHFminus,"hiHFminus/F");
 	heavyIonTreeOutput->Branch("hiHFplusEta4",&hiHFplusEta4,"hiHFplusEta4/F");
 	heavyIonTreeOutput->Branch("hiHFminusEta4",&hiHFminusEta4,"hiHFminusEta4/F");	
+	if(!storetracks) heavyIonTreeOutput->Branch("Ntroff",&Ntroff,"Ntroff/I");	
 	heavyIonTreeOutput->Branch("hiZDCplus",&hiZDCplus,"hiZDCplus/F");
 	heavyIonTreeOutput->Branch("hiZDCminus",&hiZDCminus,"hiZDCminus/F");
 	heavyIonTreeOutput->Branch("hi_FRG",&hi_FRG,"hi_FRG/F");	
@@ -1301,13 +1303,14 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		}
 
 		int multiplicity = get_Ntrkoff(nTracks, trackEtaArray, trackPtArray, trackChargeArray, trackHighPurityArray, trackPtErrorArray, trackVertexDistanceXYArray, trackVertexDistanceXYErrorArray, trackVertexDistanceZArray, trackVertexDistanceZErrorArray);
-
 		bool multsel = true;
 		if(ntrkoff==0 || ntrkoff==1){if(iEvent==0){cout << "No multiplicity cut" << endl;}}
 		if(ntrkoff==2){if(iEvent==0){cout << "HM 1 to 6: [185,250]" << endl;} if(multiplicity < 185 || multiplicity >= 250){multsel=false;}}
 		if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
 
 		if(multsel==false) continue;		
+
+		Ntroff = multiplicity;
 
 		double track_gap = 10000.0;
 
