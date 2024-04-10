@@ -510,10 +510,6 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 			// Matched jet variables
 			jetTree[iJetType]->SetBranchStatus("refpt",1);
 			jetTree[iJetType]->SetBranchAddress("refpt",&jetRefPtArray[iJetType],&jetRefPtBranch[iJetType]);
-			jetTree[iJetType]->SetBranchStatus("refpt",1);
-			jetTree[iJetType]->SetBranchAddress("refpt",&jetRefPtArray[iJetType],&jetRefPtBranch[iJetType]);
-			jetTree[iJetType]->SetBranchStatus("refpt",1);
-			jetTree[iJetType]->SetBranchAddress("refpt",&jetRefPtArray[iJetType],&jetRefPtBranch[iJetType]);
 			jetTree[iJetType]->SetBranchStatus("refeta",1);
 			jetTree[iJetType]->SetBranchAddress("refeta",&jetRefEtaArray[iJetType],&jetRefEtaBranch[iJetType]);
 			jetTree[iJetType]->SetBranchStatus("refphi",1);
