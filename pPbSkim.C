@@ -14,8 +14,9 @@ input_file: text file with a list of root input files: Forest or Skims
 ouputfile: just a counting number to run on Condor
 isMC: 0 for false --> data and > 0 for true --> MC
 ntrkoff: 0 for no cut/selection or MC, 1 for MB [10,185], 2 for HM PD 1 to 6 [185,250] and 3 for HM PD 7 [250, inf]
+largersample: 0 for p -> + eta and 2 for p -> - eta
 */
-void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
+void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int largersample){
 
 	bool is_MC; if(isMC == 0){is_MC = false;}else{is_MC = true;}
 
@@ -146,6 +147,30 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 
 	// Branches for HLT tree
 	// HLT
+	TBranch *MB_FirstCollisionAfterAbortGapBranch;	 			// Branch for MB trigger
+	TBranch *MB_ForSkimBranch;						 			// Branch for MB trigger
+	TBranch *MB_ForExpressBranch;	 							// Branch for MB trigger
+	TBranch *MB_part1Branch;	 								// Branch for MB trigger
+	TBranch *MB_part2Branch;	 								// Branch for MB trigger
+	TBranch *MB_part3Branch;	 								// Branch for MB trigger
+	TBranch *MB_part4Branch;	 								// Branch for MB trigger
+	TBranch *MB_part5Branch;	 								// Branch for MB trigger
+	TBranch *MB_part6Branch;	 								// Branch for MB trigger
+	TBranch *MB_part7Branch;	 								// Branch for MB trigger
+	TBranch *MB_part8Branch;	 								// Branch for MB trigger
+	TBranch *MB_part9Branch;	 								// Branch for MB trigger
+	TBranch *MB_part10Branch;	 								// Branch for MB trigger
+	TBranch *MB_part11Branch;	 								// Branch for MB trigger
+	TBranch *MB_part12Branch;	 								// Branch for MB trigger
+	TBranch *MB_part13Branch;	 								// Branch for MB trigger
+	TBranch *MB_part14Branch;	 								// Branch for MB trigger
+	TBranch *MB_part15Branch;	 								// Branch for MB trigger
+	TBranch *MB_part16Branch;	 								// Branch for MB trigger
+	TBranch *MB_part17Branch;	 								// Branch for MB trigger
+	TBranch *MB_part18Branch;	 								// Branch for MB trigger
+	TBranch *MB_part19Branch;	 								// Branch for MB trigger
+	TBranch *MB_part20Branch;	 								// Branch for MB trigger
+
 	TBranch *caloJetFilterBranch60;				 		// Branch for calo jet 60 filter bit
 	TBranch *caloJetFilterBranch80;				 		// Branch for calo jet 80 filter bit
 	TBranch *caloJetFilterBranch100;			 		// Branch for calo jet 100 filter bit
@@ -155,13 +180,37 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	TBranch *pfJetFilterBranch120;						// Branch for PF jet 120 filter bit
 	
 	// Leaves for the HLT tree
-	Int_t caloJetFilterBit60;					// Filter bit for calorimeter jets 60
-	Int_t caloJetFilterBit80;					// Filter bit for calorimeter jets 80
-	Int_t caloJetFilterBit100;					// Filter bit for calorimeter jets 100
-	Int_t pfJetFilterBit60;						// Filter bit for particle flow flow jets 60
-	Int_t pfJetFilterBit80;						// Filter bit for particle flow jets 80
-	Int_t pfJetFilterBit100;					// Filter bit for particle flow jets 100
-	Int_t pfJetFilterBit120;					// Filter bit for particle flow jets 100
+	Int_t *MB_FirstCollisionAfterAbortGap;	 			// Branch for MB trigger
+	Int_t *MB_ForSkim;						 			// Branch for MB trigger
+	Int_t *MB_ForExpress;	 							// Branch for MB trigger
+	Int_t *MB_part1;	 								// Branch for MB trigger
+	Int_t *MB_part2;	 								// Branch for MB trigger
+	Int_t *MB_part3;	 								// Branch for MB trigger
+	Int_t *MB_part4;	 								// Branch for MB trigger
+	Int_t *MB_part5;	 								// Branch for MB trigger
+	Int_t *MB_part6;	 								// Branch for MB trigger
+	Int_t *MB_part7;	 								// Branch for MB trigger
+	Int_t *MB_part8;	 								// Branch for MB trigger
+	Int_t *MB_part9;	 								// Branch for MB trigger
+	Int_t *MB_part10;	 								// Branch for MB trigger
+	Int_t *MB_part11;	 								// Branch for MB trigger
+	Int_t *MB_part12;	 								// Branch for MB trigger
+	Int_t *MB_part13;	 								// Branch for MB trigger
+	Int_t *MB_part14;	 								// Branch for MB trigger
+	Int_t *MB_part15;	 								// Branch for MB trigger
+	Int_t *MB_part16;	 								// Branch for MB trigger
+	Int_t *MB_part17;	 								// Branch for MB trigger
+	Int_t *MB_part18;	 								// Branch for MB trigger
+	Int_t *MB_part19;	 								// Branch for MB trigger
+	Int_t *MB_part20;	 								// Branch for MB trigger
+	Int_t *MB_all;	 									// Branch for MB trigger
+	Int_t caloJetFilterBit60;							// Filter bit for calorimeter jets 60
+	Int_t caloJetFilterBit80;							// Filter bit for calorimeter jets 80
+	Int_t caloJetFilterBit100;							// Filter bit for calorimeter jets 100
+	Int_t pfJetFilterBit60;								// Filter bit for particle flow flow jets 60
+	Int_t pfJetFilterBit80;								// Filter bit for particle flow jets 80
+	Int_t pfJetFilterBit100;							// Filter bit for particle flow jets 100
+	Int_t pfJetFilterBit120;							// Filter bit for particle flow jets 100
 
 	// Branches for skim tree
 	TBranch *primaryVertexBranch;						// Branch for primary vertex filter bit
@@ -400,6 +449,73 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	
 	// Connect the branches to the HLT tree
 	hltTree->SetBranchStatus("*",0);
+
+	hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_FirstCollisionAfterAbortGap_v1",1);
+	hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_FirstCollisionAfterAbortGap_v1",&MB_FirstCollisionAfterAbortGap,&MB_FirstCollisionAfterAbortGapBranch);
+	hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_ForSkim_v1",1);
+	hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_ForSkim_v1",&MB_ForSkim,&MB_ForSkimBranch);
+	hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_ForExpress_v1",1);
+	hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_ForExpress_v1",&MB_ForExpress,&MB_ForExpressBranch);
+	if(largersample == 1){
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part1_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part1_v1",&MB_part1,&MB_part1Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part2_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part2_v1",&MB_part2,&MB_part2Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part3_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part3_v1",&MB_part3,&MB_part3Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part4_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part4_v1",&MB_part4,&MB_part4Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part5_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part5_v1",&MB_part5,&MB_part5Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part6_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part6_v1",&MB_part6,&MB_part6Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part7_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part7_v1",&MB_part7,&MB_part7Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part8_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part8_v1",&MB_part8,&MB_part8Branch);
+	}else if(largersample == 0){
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part1_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part1_v2",&MB_part1,&MB_part1Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part2_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part2_v2",&MB_part2,&MB_part2Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part3_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part3_v2",&MB_part3,&MB_part3Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part4_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part4_v2",&MB_part4,&MB_part4Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part5_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part5_v2",&MB_part5,&MB_part5Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part6_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part6_v2",&MB_part6,&MB_part6Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part7_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part7_v2",&MB_part7,&MB_part7Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part8_v2",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part8_v2",&MB_part8,&MB_part8Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part9_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part9_v1",&MB_part9,&MB_part9Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part10_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part10_v1",&MB_part10,&MB_part10Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part11_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part11_v1",&MB_part11,&MB_part11Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part12_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part12_v1",&MB_part12,&MB_part12Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part13_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part13_v1",&MB_part13,&MB_part13Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part14_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part14_v1",&MB_part14,&MB_part14Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part15_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part15_v1",&MB_part15,&MB_part15Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part16_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part16_v1",&MB_part16,&MB_part16Branch);	
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part17_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part17_v1",&MB_part17,&MB_part17Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part18_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part18_v1",&MB_part18,&MB_part18Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part19_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part19_v1",&MB_part19,&MB_part19Branch);
+		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part20_v1",1);
+		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part20_v1",&MB_part20,&MB_part20Branch);
+	}
+
 	
 	hltTree->SetBranchStatus("HLT_PAAK4CaloJet60_Eta5p1_v3",1);
 	hltTree->SetBranchAddress("HLT_PAAK4CaloJet60_Eta5p1_v3",&caloJetFilterBit60,&caloJetFilterBranch60);
@@ -691,6 +807,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 	// Copy the HLT tree to the output
 	TTree *hltTreeOutput = new TTree("HltTree","");	
 	// Connect the branches of the HLT tree
+	hltTreeOutput->Branch("HLT_MinimumBiasAll",&MB_all,"HLT_MinimumBiasAll/I");
 	hltTreeOutput->Branch("HLT_PAAK4CaloJet60_Eta5p1_v3",&caloJetFilterBit60,"HLT_PAAK4CaloJet60_Eta5p1_v3/I");
 	hltTreeOutput->Branch("HLT_PAAK4CaloJet80_Eta5p1_v3",&caloJetFilterBit80,"HLT_PAAK4CaloJet80_Eta5p1_v3/I");
 	hltTreeOutput->Branch("HLT_PAAK4CaloJet100_Eta5p1_v3",&caloJetFilterBit100,"HLT_PAAK4CaloJet100_Eta5p1_v3/I");
@@ -1307,6 +1424,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff){
 		if(multsel==false) continue;		
 
 		Ntroff = multiplicity;
+
+		if ( MB_FirstCollisionAfterAbortGap != 0 || MB_ForSkim != 0 || MB_ForExpress != 0 || MB_part1 != 0 ||  MB_part2 != 0 ||  MB_part3 != 0 ||  MB_part4 != 0 ||  MB_part5 != 0 ||  MB_part6 != 0 ||  MB_part7 != 0 ||  MB_part8 != 0 ||  MB_part9 != 0 ||  MB_part10 != 0 ||  MB_part11 != 0 ||  MB_part12 != 0 ||  MB_part13 != 0 ||  MB_part14 != 0 ||  MB_part15 != 0 ||  MB_part16 != 0 ||  MB_part17 != 0 ||  MB_part18 != 0 ||  MB_part19 != 0 ||  MB_part20 != 0 ) MB_all = 1;
 
 		double track_gap = 10000.0;
 

@@ -13,12 +13,15 @@ parser.add_option('-o', '--outfiles', dest='outfiles', help='output files', defa
 parser.add_option('-m', '--ismontecarlo', dest='ismontecarlo', help='0 for data and >0 for MC', default='0', type='int')
 parser.add_option('-n', '--multiplicity', dest='multiplicity', help='0 for no cut, 1 for MB [0,185], 2 for HM 1 to 6 [185, 250] and 3 for HM 7 [250, inf]', default='0', type='int')
 parser.add_option('-s', '--subfiles', dest='subfiles', help='HTCondor submission file', default='', type='string')
+parser.add_option('-x', '--side', dest='psides', help='side', default='0', type='int')
+
 (opt, args) = parser.parse_args()
 inFiles = opt.infiles
 outFiles = opt.outfiles
 isMC = opt.ismontecarlo
 mult = opt.multiplicity
 subFiles = opt.subfiles
+protonSide = opt.psides
 
 ''' Read list of files '''
 listOfFiles = open(inFiles+'.txt', 'r')
@@ -48,7 +51,7 @@ for line in Lines:
 log        = cond/'''+subFiles+'''_part_'''+str(i)+'''.log
 output     = cond/'''+subFiles+'''_part_'''+str(i)+'''.out
 error      = cond/'''+subFiles+'''_part_'''+str(i)+'''.err
-arguments = '''+inFiles+'''_part'''+str(i)+'''.txt '''+outFiles+'''_'''+str(i)+'''.root '''+str(isMC)+'''  '''+str(mult)+'''
+arguments = '''+inFiles+'''_part'''+str(i)+'''.txt '''+outFiles+'''_'''+str(i)+'''.root '''+str(isMC)+'''  '''+str(mult)+'''  '''+str(protonSide)+'''
 queue
 '''
     command_lines += temp
