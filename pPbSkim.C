@@ -2573,5 +2573,6 @@ int main(int argc, char** argv){
 				TString outfile(argv[2]);
 				int mc = atoi(argv[3]);
 				int ntrkoffline = atoi(argv[4]);
-				pPbSkim(firstArgument,outfile,mc,ntrkoffline);
+				int psidearg = atoi(argv[5])
+				pPbSkim(firstArgument,outfile,mc,ntrkoffline,psidearg);
 }
