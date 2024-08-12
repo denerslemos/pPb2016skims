@@ -23,7 +23,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 	float jetrawptmin = 15.0;
 	if(is_MC){jetrawptmin = 0.0;}
 	bool storesoftdrop = false;
-	bool storetracks = true;
+	bool storetracks = false;
 
 
 	TString outputFileName;
@@ -1411,6 +1411,11 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 		particleFlowCandidateTree->GetEntry(iEvent);
 		checkFlatteningTree->GetEntry(iEvent);
 
+		Ntroff = 0;
+		MB_all = 0;
+
+		if ( MB_FirstCollisionAfterAbortGap != 0 || MB_ForSkim != 0 || MB_ForExpress != 0 || MB_part1 != 0 ||  MB_part2 != 0 ||  MB_part3 != 0 ||  MB_part4 != 0 ||  MB_part5 != 0 ||  MB_part6 != 0 ||  MB_part7 != 0 ||  MB_part8 != 0 ||  MB_part9 != 0 ||  MB_part10 != 0 ||  MB_part11 != 0 ||  MB_part12 != 0 ||  MB_part13 != 0 ||  MB_part14 != 0 ||  MB_part15 != 0 ||  MB_part16 != 0 ||  MB_part17 != 0 ||  MB_part18 != 0 ||  MB_part19 != 0 ||  MB_part20 != 0 ) MB_all = 1;
+
 		for(int iJetType = 0; iJetType < nJetTrees; iJetType++){
 			jetTree[iJetType]->GetEntry(iEvent);
 		}
@@ -1422,10 +1427,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 		if(ntrkoff==3){if(iEvent==0){cout << "HM 7: [250,inf]" << endl;} if(multiplicity < 250){multsel=false;}}
 
 		if(multsel==false) continue;		
-
 		Ntroff = multiplicity;
-
-		if ( MB_FirstCollisionAfterAbortGap != 0 || MB_ForSkim != 0 || MB_ForExpress != 0 || MB_part1 != 0 ||  MB_part2 != 0 ||  MB_part3 != 0 ||  MB_part4 != 0 ||  MB_part5 != 0 ||  MB_part6 != 0 ||  MB_part7 != 0 ||  MB_part8 != 0 ||  MB_part9 != 0 ||  MB_part10 != 0 ||  MB_part11 != 0 ||  MB_part12 != 0 ||  MB_part13 != 0 ||  MB_part14 != 0 ||  MB_part15 != 0 ||  MB_part16 != 0 ||  MB_part17 != 0 ||  MB_part18 != 0 ||  MB_part19 != 0 ||  MB_part20 != 0 ) MB_all = 1;
 
 		double track_gap = 10000.0;
 
@@ -2487,15 +2489,15 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
         for(int i = 0; i < 15; i++){ if( htempRG.GetBinContent(i+1) > pfE[i] || (track_gap < 0.5*(i+1) ) ){ FRG = 0.5 * i; break;} }
         for(int i = 0; i < 15; i++){ if( htempRG_noNsel.GetBinContent(i+1) > pfE[i] || (track_gap < 0.5*(i+1) ) ){ FRG_noNsel = 0.5 * i; break;} }
         // BRG
-		for(int i = 0; i < 20; i++){if ( htempRG.GetBinContent(20-i) > pfE[19-i] ) { BRG = 0.5 * i; break; } }
-		for(int i = 0; i < 20; i++){if ( htempRG_noNsel.GetBinContent(20-i) > pfE[19-i] ) { BRG_noNsel = 0.5 * i; break; } }
+	for(int i = 0; i < 20; i++){if ( htempRG.GetBinContent(20-i) > pfE[19-i] ) { BRG = 0.5 * i; break; } }
+	for(int i = 0; i < 20; i++){if ( htempRG_noNsel.GetBinContent(20-i) > pfE[19-i] ) { BRG_noNsel = 0.5 * i; break; } }
 
-		hi_FRG = FRG;
-		hi_FRG_noNsel = FRG_noNsel;
-		hi_BRG = BRG;
-		hi_FRG_noNsel = BRG_noNsel;
+	hi_FRG = FRG;
+	hi_FRG_noNsel = FRG_noNsel;
+	hi_BRG = BRG;
+	hi_FRG_noNsel = BRG_noNsel;
 
-		heavyIonTreeOutput->Fill();
+	heavyIonTreeOutput->Fill();
 
 
 	} // End loop over events
