@@ -180,30 +180,30 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 	TBranch *pfJetFilterBranch120;						// Branch for PF jet 120 filter bit
 	
 	// Leaves for the HLT tree
-	Int_t *MB_FirstCollisionAfterAbortGap;	 			// Branch for MB trigger
-	Int_t *MB_ForSkim;						 			// Branch for MB trigger
-	Int_t *MB_ForExpress;	 							// Branch for MB trigger
-	Int_t *MB_part1;	 								// Branch for MB trigger
-	Int_t *MB_part2;	 								// Branch for MB trigger
-	Int_t *MB_part3;	 								// Branch for MB trigger
-	Int_t *MB_part4;	 								// Branch for MB trigger
-	Int_t *MB_part5;	 								// Branch for MB trigger
-	Int_t *MB_part6;	 								// Branch for MB trigger
-	Int_t *MB_part7;	 								// Branch for MB trigger
-	Int_t *MB_part8;	 								// Branch for MB trigger
-	Int_t *MB_part9;	 								// Branch for MB trigger
-	Int_t *MB_part10;	 								// Branch for MB trigger
-	Int_t *MB_part11;	 								// Branch for MB trigger
-	Int_t *MB_part12;	 								// Branch for MB trigger
-	Int_t *MB_part13;	 								// Branch for MB trigger
-	Int_t *MB_part14;	 								// Branch for MB trigger
-	Int_t *MB_part15;	 								// Branch for MB trigger
-	Int_t *MB_part16;	 								// Branch for MB trigger
-	Int_t *MB_part17;	 								// Branch for MB trigger
-	Int_t *MB_part18;	 								// Branch for MB trigger
-	Int_t *MB_part19;	 								// Branch for MB trigger
-	Int_t *MB_part20;	 								// Branch for MB trigger
-	Int_t *MB_all;	 									// Branch for MB trigger
+	Int_t MB_FirstCollisionAfterAbortGap;	 			// Branch for MB trigger
+	Int_t MB_ForSkim;						 			// Branch for MB trigger
+	Int_t MB_ForExpress;	 							// Branch for MB trigger
+	Int_t MB_part1;	 								// Branch for MB trigger
+	Int_t MB_part2;	 								// Branch for MB trigger
+	Int_t MB_part3;	 								// Branch for MB trigger
+	Int_t MB_part4;	 								// Branch for MB trigger
+	Int_t MB_part5;	 								// Branch for MB trigger
+	Int_t MB_part6;	 								// Branch for MB trigger
+	Int_t MB_part7;	 								// Branch for MB trigger
+	Int_t MB_part8;	 								// Branch for MB trigger
+	Int_t MB_part9;	 								// Branch for MB trigger
+	Int_t MB_part10;	 								// Branch for MB trigger
+	Int_t MB_part11;	 								// Branch for MB trigger
+	Int_t MB_part12;	 								// Branch for MB trigger
+	Int_t MB_part13;	 								// Branch for MB trigger
+	Int_t MB_part14;	 								// Branch for MB trigger
+	Int_t MB_part15;	 								// Branch for MB trigger
+	Int_t MB_part16;	 								// Branch for MB trigger
+	Int_t MB_part17;	 								// Branch for MB trigger
+	Int_t MB_part18;	 								// Branch for MB trigger
+	Int_t MB_part19;	 								// Branch for MB trigger
+	Int_t MB_part20;	 								// Branch for MB trigger
+	Int_t MB_all;	 									// Branch for MB trigger
 	Int_t caloJetFilterBit60;							// Filter bit for calorimeter jets 60
 	Int_t caloJetFilterBit80;							// Filter bit for calorimeter jets 80
 	Int_t caloJetFilterBit100;							// Filter bit for calorimeter jets 100
@@ -2573,6 +2573,6 @@ int main(int argc, char** argv){
 				TString outfile(argv[2]);
 				int mc = atoi(argv[3]);
 				int ntrkoffline = atoi(argv[4]);
-				int psidearg = atoi(argv[5])
+				int psidearg = atoi(argv[5]);
 				pPbSkim(firstArgument,outfile,mc,ntrkoffline,psidearg);
 }
