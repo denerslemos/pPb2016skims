@@ -23,8 +23,10 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 	float jetrawptmin = 15.0;
 	if(is_MC){jetrawptmin = 0.0;}
 	bool storesoftdrop = false;
-	bool storetracks = false;
-
+	bool storetracks = true;
+	bool storepfcand = true;
+	
+	if(storepfcand) storesoftdrop = false; 
 
 	TString outputFileName;
 	outputFileName = Form("%s",ouputfile.Data());
@@ -46,7 +48,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 	// Make a chain and a vector of file names
 	std::vector<TString> file_name_vector;
 	string file_chain;
-	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("root://osg-se.sprace.org.br/%s",file_chain.c_str()));}
+	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("%s",file_chain.c_str()));}
 	inputfile.close();
 	// Maximum size of arrays
 	const Int_t nMaxJet = 500;				// Maximum number of jets in an event
@@ -490,30 +492,32 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part7_v2",&MB_part7,&MB_part7Branch);
 		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part8_v2",1);
 		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part8_v2",&MB_part8,&MB_part8Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part9_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part9_v1",&MB_part9,&MB_part9Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part10_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part10_v1",&MB_part10,&MB_part10Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part11_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part11_v1",&MB_part11,&MB_part11Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part12_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part12_v1",&MB_part12,&MB_part12Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part13_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part13_v1",&MB_part13,&MB_part13Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part14_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part14_v1",&MB_part14,&MB_part14Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part15_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part15_v1",&MB_part15,&MB_part15Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part16_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part16_v1",&MB_part16,&MB_part16Branch);	
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part17_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part17_v1",&MB_part17,&MB_part17Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part18_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part18_v1",&MB_part18,&MB_part18Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part19_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part19_v1",&MB_part19,&MB_part19Branch);
-		hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part20_v1",1);
-		hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part20_v1",&MB_part20,&MB_part20Branch);
+		if(!is_MC){
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part9_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part9_v1",&MB_part9,&MB_part9Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part10_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part10_v1",&MB_part10,&MB_part10Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part11_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part11_v1",&MB_part11,&MB_part11Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part12_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part12_v1",&MB_part12,&MB_part12Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part13_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part13_v1",&MB_part13,&MB_part13Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part14_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part14_v1",&MB_part14,&MB_part14Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part15_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part15_v1",&MB_part15,&MB_part15Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part16_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part16_v1",&MB_part16,&MB_part16Branch);	
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part17_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part17_v1",&MB_part17,&MB_part17Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part18_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part18_v1",&MB_part18,&MB_part18Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part19_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part19_v1",&MB_part19,&MB_part19Branch);
+			hltTree->SetBranchStatus("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part20_v1",1);
+			hltTree->SetBranchAddress("HLT_PAL1MinimumBiasHF_OR_SinglePixelTrack_part20_v1",&MB_part20,&MB_part20Branch);
+		}
 	}
 
 	
@@ -1376,6 +1380,23 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 		genTrackTreeOutput->Branch("sube","vector<int>", &genTrackSubeventVector);
 	}
 	
+	// Copy the track trees to the output
+	TTree *pfTrackTreeOutput = new TTree("pfTree","");
+	// pf tracks only in Monte Carlo
+	std::vector<float> *pfTrackPtVector = new std::vector<float>(); pfTrackPtVector->clear();
+	std::vector<float> *pfTrackPhiVector = new std::vector<float>(); pfTrackPhiVector->clear();
+	std::vector<float> *pfTrackEtaVector = new std::vector<float>(); pfTrackEtaVector->clear();
+	std::vector<float> *pfTrackEnergyVector = new std::vector<float>(); pfTrackEnergyVector->clear();
+	std::vector<float> *pfTrackMassVector = new std::vector<float>(); pfTrackMassVector->clear();
+	std::vector<int> *pfTrackIDVector = new std::vector<int>(); pfTrackIDVector->clear();
+
+	pfTrackTreeOutput->Branch("pfPt","vector<float>", &pfTrackPtVector);
+	pfTrackTreeOutput->Branch("pfPhi","vector<float>", &pfTrackPhiVector);
+	pfTrackTreeOutput->Branch("pfEta","vector<float>", &pfTrackEtaVector);
+	pfTrackTreeOutput->Branch("pfEnergy","vector<float>", &pfTrackEnergyVector);
+	pfTrackTreeOutput->Branch("pfM","vector<float>", &pfTrackMassVector);
+	pfTrackTreeOutput->Branch("pfId","vector<int>", &pfTrackIDVector);
+
 	TTree *RhoTreeOutput = new TTree("rhotree","");
 	RhoTreeOutput->Branch("etaMin","vector<double>", &RhoetaminVector);
 	RhoTreeOutput->Branch("etaMax","vector<double>", &RhoetamaxVector);
@@ -2437,20 +2458,41 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
     	}
     	trackTreeOutput->Fill();
 
+		if(storepfcand){
+	   		for(int ipfTrack = 0; ipfTrack < particleFlowCandidatePtVector->size(); ipfTrack++){
+   				// Cut away low pT tracks and tracks with eta outside of tracker acceptance
+		        // Fill the output vectors with gen particles surviving the cuts
+	       		pfTrackPtVector->push_back(particleFlowCandidatePtVector->at(ipfTrack));
+    	   		pfTrackPhiVector->push_back(particleFlowCandidatePhiVector->at(ipfTrack));
+       			pfTrackEtaVector->push_back(particleFlowCandidateEtaVector->at(ipfTrack));
+    			pfTrackEnergyVector->push_back(particleFlowCandidateEnergyVector->at(ipfTrack));
+ 	      		pfTrackMassVector->push_back(particleFlowCandidateMassVector->at(ipfTrack));
+ 	     		pfTrackIDVector->push_back(particleFlowCandidateIDVector->at(ipfTrack));
+ 	     	}
+      
+      		pfTrackTreeOutput->Fill();
+    		// Clear the vectors before the next event! Otherwise all the tracks pile up cumulatively
+			pfTrackPtVector->clear();
+     		pfTrackPhiVector->clear();
+      		pfTrackEtaVector->clear();
+      		pfTrackEnergyVector->clear();
+      		pfTrackMassVector->clear();
+      		pfTrackIDVector->clear();
+	    }
 
     	// Gen track loop
     	if(is_MC){
-    		for(int iTrack = 0; iTrack < genTrackPtArray->size(); iTrack++){
+    		for(int igTrack = 0; igTrack < genTrackPtArray->size(); igTrack++){
     			// Cut away low pT tracks and tracks with eta outside of tracker acceptance
-				if(TMath::Abs(genTrackEtaArray->at(iTrack)) >= 2.4) continue; //acceptance of the tracker
-				if(genTrackPtArray->at(iTrack) <= 0.2) continue;   // Minimum track pT
+				if(TMath::Abs(genTrackEtaArray->at(igTrack)) >= 2.4) continue; //acceptance of the tracker
+				if(genTrackPtArray->at(igTrack) <= 0.2) continue;   // Minimum track pT
 		        // Fill the output vectors with gen particles surviving the cuts
-        		genTrackPtVector->push_back(genTrackPtArray->at(iTrack));
-        		genTrackPhiVector->push_back(genTrackPhiArray->at(iTrack));
-        		genTrackEtaVector->push_back(genTrackEtaArray->at(iTrack));
-       			genTrackPdgVector->push_back(genTrackPdgArray->at(iTrack));
-        		genTrackChargeVector->push_back(genTrackChargeArray->at(iTrack));
-        		genTrackSubeventVector->push_back(genTrackSubeventArray->at(iTrack));
+        		genTrackPtVector->push_back(genTrackPtArray->at(igTrack));
+        		genTrackPhiVector->push_back(genTrackPhiArray->at(igTrack));
+        		genTrackEtaVector->push_back(genTrackEtaArray->at(igTrack));
+       			genTrackPdgVector->push_back(genTrackPdgArray->at(igTrack));
+        		genTrackChargeVector->push_back(genTrackChargeArray->at(igTrack));
+        		genTrackSubeventVector->push_back(genTrackSubeventArray->at(igTrack));
       		}
       
       		genTrackTreeOutput->Fill();
@@ -2489,15 +2531,15 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
         for(int i = 0; i < 15; i++){ if( htempRG.GetBinContent(i+1) > pfE[i] || (track_gap < 0.5*(i+1) ) ){ FRG = 0.5 * i; break;} }
         for(int i = 0; i < 15; i++){ if( htempRG_noNsel.GetBinContent(i+1) > pfE[i] || (track_gap < 0.5*(i+1) ) ){ FRG_noNsel = 0.5 * i; break;} }
         // BRG
-	for(int i = 0; i < 20; i++){if ( htempRG.GetBinContent(20-i) > pfE[19-i] ) { BRG = 0.5 * i; break; } }
-	for(int i = 0; i < 20; i++){if ( htempRG_noNsel.GetBinContent(20-i) > pfE[19-i] ) { BRG_noNsel = 0.5 * i; break; } }
+		for(int i = 0; i < 20; i++){if ( htempRG.GetBinContent(20-i) > pfE[19-i] ) { BRG = 0.5 * i; break; } }
+		for(int i = 0; i < 20; i++){if ( htempRG_noNsel.GetBinContent(20-i) > pfE[19-i] ) { BRG_noNsel = 0.5 * i; break; } }
 
-	hi_FRG = FRG;
-	hi_FRG_noNsel = FRG_noNsel;
-	hi_BRG = BRG;
-	hi_FRG_noNsel = BRG_noNsel;
+		hi_FRG = FRG;
+		hi_FRG_noNsel = FRG_noNsel;
+		hi_BRG = BRG;
+		hi_BRG_noNsel = BRG_noNsel;
 
-	heavyIonTreeOutput->Fill();
+		heavyIonTreeOutput->Fill();
 
 
 	} // End loop over events
@@ -2545,14 +2587,22 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 		trackTreeOutput->Write();
 		gDirectory->cd("../");
 	
-		// Generator particles only present in MC
-		if(is_MC){
-			gDirectory->mkdir("HiGenParticleAna");
-			gDirectory->cd("HiGenParticleAna");
-			genTrackTreeOutput->Write();
-			gDirectory->cd("../");
-		}
 	}
+		
+  	if(storepfcand) {
+  		gDirectory->mkdir("pfcandAnalyzer");
+  		gDirectory->cd("pfcandAnalyzer");
+		pfTrackTreeOutput->Write();
+		gDirectory->cd("../");
+	
+	}
+	// Generator particles only present in MC
+	if((storetracks && is_MC) || (storepfcand && is_MC)){
+		gDirectory->mkdir("HiGenParticleAna");
+		gDirectory->cd("HiGenParticleAna");
+		genTrackTreeOutput->Write();
+		gDirectory->cd("../");
+	}	
 
 	outputFile->Close();
 
