@@ -34,7 +34,7 @@ that creates a certificate file valid for 200 hours: ```voms_proxy.txt```
 Now you can submit the condor jobs using the python script, [```HTCondor_submit.py```](https://github.com/denerslemos/pPb2016skims/blob/main/HTCondor_submit.py):
 
 ```
-python3 HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z
+python3 HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z -x Q
 ```
 
 - input_text_file: is the text file (use it without the .txt extension) with inputs and can be found in the folders [MC_PYTHIA_SAMPLES](https://github.com/denerslemos/pPb2016skims/tree/main/MC_PYTHIA_SAMPLES) or [DATA_SAMPLES](https://github.com/denerslemos/pPb2016skims/tree/main/DATA_SAMPLES) each .root input will be a job
@@ -46,5 +46,7 @@ python3 HTCondor_submit.py -i input_text_file -o output_name_file -m X -n Y -s Z
 - Y: 0 for no multiplicity cut (mostly MC or jet samples), 1 for MB [0,185], 2 for HM185 [185,250] and 3 for HM250 [250,inf]
 
 - Z: name for the submission files, I have used HTcondor_sub_ + some information from the sample, pthat, MB, ... + pgoing or Pbgoing.
+
+- Q: data side MB triggers due  to different names : 0 for p -> + eta and 1 for p -> - eta. For MC use always 0.
 
 It will automatically include a counter for each input
