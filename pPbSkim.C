@@ -48,7 +48,7 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 	// Make a chain and a vector of file names
 	std::vector<TString> file_name_vector;
 	string file_chain;
-	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("%s",file_chain.c_str()));}
+	while(getline(inputfile, file_chain)){file_name_vector.push_back(Form("root://osg-se.sprace.org.br/%s",file_chain.c_str()));}
 	inputfile.close();
 	// Maximum size of arrays
 	const Int_t nMaxJet = 500;				// Maximum number of jets in an event
