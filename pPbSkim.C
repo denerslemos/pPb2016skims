@@ -14,7 +14,7 @@ input_file: text file with a list of root input files: Forest or Skims
 ouputfile: just a counting number to run on Condor
 isMC: 0 for false --> data and > 0 for true --> MC
 ntrkoff: 0 for no cut/selection or MC, 1 for MB [10,185], 2 for HM PD 1 to 6 [185,250] and 3 for HM PD 7 [250, inf]
-largersample: 0 for p -> + eta and 2 for p -> - eta
+largersample: 0 for p -> + eta and 1 for p -> - eta
 */
 void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int largersample){
 
