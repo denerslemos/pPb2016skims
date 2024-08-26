@@ -23,8 +23,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 	float jetrawptmin = 15.0;
 	if(is_MC){jetrawptmin = 0.0;}
 	bool storesoftdrop = false;
-	bool storetracks = true;
-	bool storepfcand = true;
+	bool storetracks = false;
+	bool storepfcand = false;
 	
 	if(storepfcand) storesoftdrop = false; 
 
