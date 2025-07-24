@@ -73,8 +73,8 @@ void pPbSkim(TString input_file, TString ouputfile, int isMC, int ntrkoff, int l
 
 	// add all the trees to the chain
 	for (std::vector<TString>::iterator listIterator = file_name_vector.begin(); listIterator != file_name_vector.end(); listIterator++){
-		//TFile testfile(*listIterator, "READ"); 
-		//if(testfile.IsZombie() || testfile.TestBit(TFile::kRecovered)) continue;
+		TFile testfile(*listIterator, "READ"); 
+		if(testfile.IsZombie() || testfile.TestBit(TFile::kRecovered)) continue;
 		cout << "Adding file " << *listIterator << " to the chains" << endl;
 		hltTree->Add(*listIterator);
 		trackTree->Add(*listIterator);
